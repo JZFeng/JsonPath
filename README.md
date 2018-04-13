@@ -1,10 +1,9 @@
-# Sample JsonPath
- Here are some sample JsonPaths
- 	 "RETURNS.maxView.value[0:].label",
-  	"RETURNS.maxView.value[].label.textSpans[0]",
-  	"RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
-  	"RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
-  	"RETURNS.maxView.value[].label.textSpans[?(@.text =~ \"(.)\\d{3,}(.)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
+# Here are some sample JsonPaths
+  	 "RETURNS.maxView.value[0:].label",
+  	 "RETURNS.maxView.value[].label.textSpans[0]",
+  	 "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
+  	 "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
+  	 "RETURNS.maxView.value[].label.textSpans[?(@.text =~ \"(.)\\d{3,}(.)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
  
 
 JsonPath expressions always refer to a JSON structure in the same way as XPath expression are used in combination 
