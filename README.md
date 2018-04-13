@@ -1,6 +1,4 @@
-# JsonPath
- public static List<JsonElementWithLevel> get(JsonObject source, String path)
- 
+Sample JsonPath
  Here are some sample JsonPaths
  	 "RETURNS.maxView.value[0:].label",
   	"RETURNS.maxView.value[].label.textSpans[0]",
