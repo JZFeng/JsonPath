@@ -114,7 +114,7 @@ Given the json
 }
 ```
 
-| JsonPath (click link to try)| Result |
+| JsonPath | Result |
 | :------- | :----- |
 $.store.book[*].author| The authors of all books     |
 $..author                   | All authors                         |
