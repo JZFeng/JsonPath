@@ -1,10 +1,8 @@
 package com.jz.json.jsonpath;
 
 import com.google.gson.*;
-
 import java.io.File;
 import java.util.*;
-
 import static com.jz.json.jsonpath.Range.getRange;
 import static com.jz.json.jsonpath.Utils.getKeys;
 
@@ -23,26 +21,31 @@ import static com.jz.json.jsonpath.Utils.getKeys;
 public class JsonPath {
 
     public static void main(String[] args) throws Exception {
+
         JsonParser parser = new JsonParser();
         String json = Utils.convertFormattedJson2Raw(new File("/Users/jzfeng/Desktop/O.json"));
-        JsonObject o1 = parser.parse(json).getAsJsonObject();
-
+        JsonObject source = parser.parse(json).getAsJsonObject();
 
         String[] paths = new String[]
-                {"$.modules.BINSUMMARY.minView.actions[0].action.URL",
+                {"$.modules.BINSUMMARY.minView.actions[0]",
+                        "modules.SELLERPRESENCE.sellerName.action.URL",
                         "RETURNS.maxView.value[0:].label",
                         "RETURNS.maxView.value[*].label.textSpans[0]",
                         "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
                         "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
-                        "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
+                        "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]",
+                        "URL"
+                };
 
         for (String path : paths) {
-            List<JsonElementWithLevel> res = get(o1, path);
-            System.out.println("****************" + path + "****************");
+            long startTime = System.currentTimeMillis();
+            List<JsonElementWithLevel> res = get(source, path);
+            System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms");
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
             }
         }
+
     }
 
 
@@ -77,6 +80,9 @@ public class JsonPath {
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
         Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
         String regex = generateRegex(path);
+        boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
+        boolean isFinished = false;
+
 
         // to support length() function;
         if (path.matches("(.*)(\\.length\\(\\)$)")) { // case: [path == $.listing.termsAndPolicies.length()]
@@ -89,7 +95,7 @@ public class JsonPath {
 
         Queue<JsonElementWithLevel> queue = new LinkedList<JsonElementWithLevel>();
         queue.offer(new JsonElementWithLevel(source, "$"));
-        boolean isDone = false;
+
         while (!queue.isEmpty()) {
             int size = queue.size();
             //Traverse by level
@@ -112,7 +118,7 @@ public class JsonPath {
                         updateMatchedFilters(level, filters, matchedFilters);
 
                         if (level.matches(regex)) {
-                            isDone = true;
+                            isFinished = true;
                             if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length)) {
                                 result.add(tmp);
                             }
@@ -122,14 +128,12 @@ public class JsonPath {
                     JsonObject jo = je.getAsJsonObject();
                     int length = jo.entrySet().size();
                     for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
-                        String key = entry.getKey();
-                        JsonElement value = entry.getValue();
-                        String level = currentLevel + "." + key;
-                        JsonElementWithLevel tmp = new JsonElementWithLevel(value, level);
+                        String level = currentLevel + "." + entry.getKey();
+                        JsonElementWithLevel tmp = new JsonElementWithLevel(entry.getValue(), level);
                         queue.offer(tmp);
                         updateMatchedFilters(level, filters, matchedFilters);
                         if (level.matches(regex)) {
-                            isDone = true;
+                            isFinished = true;
                             if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length)) {
                                 result.add(tmp);
                             }
@@ -140,9 +144,10 @@ public class JsonPath {
 
             // current level is BFS done which means all possible candidates are already captured in the result,
             // end BFS by directly returning result;
-            if (isDone) {
+            if (isAbsolutePath && isFinished) {
                 return result;
             }
+
         }
 
 
@@ -169,22 +174,27 @@ public class JsonPath {
             String currentLevel,
             Map<String, List<Filter>> matchedFilters,
             int length) throws Exception {
+
+        if (matchedFilters == null || matchedFilters.size() == 0) {
+            return true;
+        }
+
         StringBuilder prefix = new StringBuilder();
         StringBuilder prepath = new StringBuilder();
         int index = 0;
         while ((index = currentLevel.indexOf('[')) != -1) {
             prepath.append(currentLevel.substring(0, currentLevel.indexOf(']') + 1));
             prefix.append(currentLevel.substring(0, index) + "[]");
-//            System.out.println("prepath : " + prepath.toString());
-//            System.out.println("prefix : " + prefix.toString());
             int i = Integer.parseInt(currentLevel.substring(index + 1, currentLevel.indexOf(']')));
             List<Filter> filters = matchedFilters.get(prefix.toString().trim());
+            if (filters == null || filters.size() == 0) {
+                return true;
+            }
 
             boolean isMatched = false;
-
-            if (filters.size() > 0 && filters.get(0) instanceof Range) {
+            if (filters.get(0) instanceof Range) {
                 isMatched = isMatchingRange(filters, prefix.toString(), i, length);
-            } else if (filters.size() > 0 && (filters.get(0) instanceof Condition)) {
+            } else if (filters.get(0) instanceof Condition) {
                 List<Condition> c = new ArrayList<>();
                 for (Filter f : filters) {
                     c.add((Condition) f);
@@ -375,7 +385,7 @@ public class JsonPath {
 
     private static String generateRegex(String path) {
         if (path.startsWith("$")) {
-            path = "\\$" + path.substring(1);
+            path = path.substring(2);
         }
 
         StringBuilder prefix = new StringBuilder();
@@ -385,7 +395,7 @@ public class JsonPath {
             path = path.substring(path.indexOf(']') + 1);
         }
         prefix.append(path);
-        String regex = "(.*)(" + prefix.toString().trim().replaceAll("\\[\\]", "\\\\[.*\\\\]") + ")";
+        String regex = "(.*)(\\." + prefix.toString().trim().replaceAll("\\[\\]", "\\\\[.*\\\\]") + ")";
 
         return regex;
     }
@@ -469,7 +479,21 @@ public class JsonPath {
         return res;
     }
 
+    private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
+        if (path == null || path.length() == 0) {
+            throw new IllegalArgumentException("Jason path can not be empty.");
+        }
 
-
-
+        path = path.trim();
+        if (path.startsWith("$")) {
+            return true;
+        }
+        Set<String> keys = getKeys(source);
+        int index = path.indexOf(".");
+        if (index == -1) {
+            return false;
+        } else {
+            return keys.contains(path.substring(0, index));
+        }
+    }
 }
