@@ -55,6 +55,35 @@ public class JsonPath {
         }
     }
 
+
+    public static List<JsonElementWithLevel> get(
+            String source, String path) throws Exception {
+        List<JsonElementWithLevel> res = new ArrayList<>();
+        return get(source, path, false);
+    }
+
+    /**
+     * @author jzfeng
+     * @param source
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public static List<JsonElementWithLevel> get(
+            String source, String path, boolean ignoreCase) throws Exception {
+        List<JsonElementWithLevel> res = new ArrayList<>();
+        if(source == null  || source.length() == 0 || path == null || path.length() == 0) {
+            return res;
+        }
+
+        JsonParser parser = new JsonParser();
+        JsonObject src = parser.parse(source).getAsJsonObject();
+        res = get(src, path, ignoreCase);
+
+        return res;
+    }
+
+
     /**
      * @param source the source of JsonObject
      * @param path   standard json path;
@@ -183,15 +212,7 @@ public class JsonPath {
         return result;
     }
 
-/*   public static List<JsonElement> getJsonElementByPath(JsonObject source, String path) throws Exception {
-    List<JsonElement> result = new ArrayList<>();
-    List<JsonElementWithLevel> res = get(source, path);
-    for (JsonElementWithLevel e : res) {
-    result.add(e.getJsonElement());
-    }
 
-    return result;
-    }*/
 
     /**
      * @param currentLevel   $.courses[i].grade
