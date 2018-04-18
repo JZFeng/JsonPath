@@ -1,8 +1,10 @@
 package com.jz.json.jsonpath;
 
 import com.google.gson.*;
+
 import java.io.File;
 import java.util.*;
+
 import static com.jz.json.jsonpath.Range.getRange;
 import static com.jz.json.jsonpath.Utils.getKeys;
 
@@ -11,11 +13,16 @@ import static com.jz.json.jsonpath.Utils.getKeys;
  * <p>
  * get(JsonObject source, String path), support standard JsonPath;
  * Here are some sample JsonPaths
- * "RETURNS.maxView.value[0:].label",
- * "RETURNS.maxView.value[*].label.textSpans[0]",
- * "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
- * "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
- * "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
+ * String[] paths = new String[]{
+        "$.modules.BINSUMMARY.minView.actions[0]",
+        "modules.SELLERPRESENCE.sellerName.action.URL",
+        "RETURNS.maxView.value.length()",
+        "RETURNS.maxView.value[0:].label",
+        "RETURNS.maxView.value[*].label.textSpans[0]",
+        "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
+        "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
+        "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]",
+        "URL" };
  */
 
 public class JsonPath {
@@ -29,6 +36,7 @@ public class JsonPath {
         String[] paths = new String[]
                 {"$.modules.BINSUMMARY.minView.actions[0]",
                         "modules.SELLERPRESENCE.sellerName.action.URL",
+                        "RETURNS.maxView.value.length()",
                         "RETURNS.maxView.value[0:].label",
                         "RETURNS.maxView.value[*].label.textSpans[0]",
                         "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
@@ -39,55 +47,59 @@ public class JsonPath {
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
-            List<JsonElementWithLevel> res = get(source, path);
+            List<JsonElementWithLevel> res = get(source, path, true);
             System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms");
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
             }
         }
+    }
 
+    /**
+     * @param source the source of JsonObject
+     * @param path   standard json path;
+     * @return
+     * @throws Exception
+     * @author jzfeng
+     */
+    public static List<JsonElementWithLevel> get(JsonObject source, String path) throws Exception {
+        return get(source, path, false);
     }
 
 
     /**
-     * @param source the source of JsonObject
-     *               Sample JsonObject:{"store": {"book": [{"category": "reference","author": "Nigel Rees","title": "Sayings of the Century","price": 8.95},{"category": "fiction","author": "Evelyn Waugh","title": "Sword of Honour","price": 12.99},{"category": "fiction","author": "Herman Melville","title": "Moby Dick","isbn": "0-553-21311-3","price": 8.99},{"category": "fiction","author": "J. R. R. Tolkien","title": "The Lord of the Rings","isbn": "0-395-19395-8","price": 22.99}],"bicycle": {"color": "red","price": 19.95}},"expensive": 10}
-     * @param path   Sample JsonPath
-     *               <p>
-     *               now supporting standard JsonPath. Partial JsonPath is also supported.
-     *               $.store.book[*].author	The authors of all books
-     *               $.store 	All things, both books and bicycles
-     *               book[2]	    The third book
-     *               book[-2]	The second to last book
-     *               book[0,1]	The first two books
-     *               book[:2]	All books from index 0 (inclusive) until index 2 (exclusive)
-     *               book[1:2]	All books from index 1 (inclusive) until index 2 (exclusive)
-     *               book[-2:]	Last two books
-     *               book[2:]	Book number two from tail
-     *               book[first()]
-     *               book[last()]
+     * @param source     the source of JsonObject
+     * @param path       standard json path;
+     * @param ignoreCase if true, it will ignore the case of path; if false, it will strictly match path;
      * @return returns a a list of {@link JsonElementWithLevel}
      * @author jzfeng
      */
     public static List<JsonElementWithLevel> get(
-            JsonObject source, String path) throws Exception {
+            JsonObject source, String path, boolean ignoreCase) throws Exception {
         List<JsonElementWithLevel> result = new ArrayList<>();
         if (path == null || path.length() == 0 || source == null || source.isJsonNull()) {
             return result;
         }
 
-        Map<String, List<Filter>> filters = getFilters(path); // generate filters from path;
+        Map<String, List<Filter>> filters = getFilters(path, ignoreCase); // generate filters from path;;
+
+        String regex = null;
+        if (ignoreCase) {
+            regex = generateRegex(path.toLowerCase());
+        } else {
+            regex = generateRegex(path);
+        }
+
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
         Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
-        String regex = generateRegex(path);
+
         boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
         boolean isFinished = false;
-
 
         // to support length() function;
         if (path.matches("(.*)(\\.length\\(\\)$)")) { // case: [path == $.listing.termsAndPolicies.length()]
             path = path.replaceAll("(.*)(\\.length\\(\\)$)", "$1");
-            int length = length(source, path);
+            int length = length(source, path, ignoreCase);
             result.add(new JsonElementWithLevel(new JsonPrimitive(length), path));
             return result;
         }
@@ -105,9 +117,7 @@ public class JsonPath {
                 JsonElement je = org.getJsonElement();
 //                System.out.println(currentLevel);
 
-                if (je.isJsonPrimitive()) {
-                    //do nothing
-                } else if (je.isJsonArray()) {
+                if (je.isJsonArray()) {
                     JsonArray ja = je.getAsJsonArray();
                     cachedJsonArrays.put(currentLevel, ja);
                     int length = ja.size();
@@ -115,12 +125,21 @@ public class JsonPath {
                         String level = currentLevel + "[" + j + "]";
                         JsonElementWithLevel tmp = new JsonElementWithLevel(ja.get(j), level);
                         queue.offer(tmp);
-                        updateMatchedFilters(level, filters, matchedFilters);
-
-                        if (level.matches(regex)) {
-                            isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length)) {
-                                result.add(tmp);
+                        if (ignoreCase) {
+                            updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
+                            if (level.toLowerCase().matches(regex)) {
+                                isFinished = true;
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                    result.add(tmp);
+                                }
+                            }
+                        } else {
+                            updateMatchedFilters(level, filters, matchedFilters);
+                            if (level.matches(regex)) {
+                                isFinished = true;
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                    result.add(tmp);
+                                }
                             }
                         }
                     }
@@ -131,11 +150,21 @@ public class JsonPath {
                         String level = currentLevel + "." + entry.getKey();
                         JsonElementWithLevel tmp = new JsonElementWithLevel(entry.getValue(), level);
                         queue.offer(tmp);
-                        updateMatchedFilters(level, filters, matchedFilters);
-                        if (level.matches(regex)) {
-                            isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length)) {
-                                result.add(tmp);
+                        if (ignoreCase) {
+                            updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
+                            if (level.toLowerCase().matches(regex)) {
+                                isFinished = true;
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                    result.add(tmp);
+                                }
+                            }
+                        } else {
+                            updateMatchedFilters(level, filters, matchedFilters);
+                            if (level.matches(regex)) {
+                                isFinished = true;
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                    result.add(tmp);
+                                }
                             }
                         }
                     }
@@ -173,11 +202,13 @@ public class JsonPath {
             Map<String, JsonArray> cachedJsonArrays,
             String currentLevel,
             Map<String, List<Filter>> matchedFilters,
-            int length) throws Exception {
-
+            int length,
+            boolean ignoreCase
+                                            ) throws Exception {
         if (matchedFilters == null || matchedFilters.size() == 0) {
             return true;
         }
+
 
         StringBuilder prefix = new StringBuilder();
         StringBuilder prepath = new StringBuilder();
@@ -186,14 +217,20 @@ public class JsonPath {
             prepath.append(currentLevel.substring(0, currentLevel.indexOf(']') + 1));
             prefix.append(currentLevel.substring(0, index) + "[]");
             int i = Integer.parseInt(currentLevel.substring(index + 1, currentLevel.indexOf(']')));
-            List<Filter> filters = matchedFilters.get(prefix.toString().trim());
+            List<Filter> filters = null;
+            if (ignoreCase) {
+                filters = matchedFilters.get(prefix.toString().trim().toLowerCase());
+            } else {
+                filters = matchedFilters.get(prefix.toString().trim());
+            }
+
             if (filters == null || filters.size() == 0) {
                 return true;
             }
 
             boolean isMatched = false;
             if (filters.get(0) instanceof Range) {
-                isMatched = isMatchingRange(filters, prefix.toString(), i, length);
+                isMatched = isMatchingRange(filters, i, length);
             } else if (filters.get(0) instanceof Condition) {
                 List<Condition> c = new ArrayList<>();
                 for (Filter f : filters) {
@@ -248,12 +285,11 @@ public class JsonPath {
     /**
      * to check whether $.modules.RETURNS.maxView.value[4] is matching the range in matchedRanges;
      *
-     * @param prefix the current field name like $.modules.RETURNS.maxView.value[]
-     * @param i      index of a JsonArray
+     * @param i index of a JsonArray
      * @return return true if  i in any of the range [(0, 0), (3,3)], otherwise return false;
      */
     private static boolean isMatchingRange(
-            List<Filter> filterList, String prefix, int i, int length) throws Exception {
+            List<Filter> filterList, int i, int length) throws Exception {
         if (filterList != null && filterList.size() > 0) {
             for (Filter filter : filterList) {
                 if (filter instanceof Range) {
@@ -401,7 +437,7 @@ public class JsonPath {
     }
 
 
-    private static int length(JsonObject jsonObject, String path) throws Exception {
+    private static int length(JsonObject jsonObject, String path, boolean ignoreCase) throws Exception {
         if (path == null || path.length() == 0) {
             return 0;
         }
@@ -410,7 +446,7 @@ public class JsonPath {
         }
 
         int length = 0;
-        List<JsonElementWithLevel> result = get(jsonObject, path);
+        List<JsonElementWithLevel> result = get(jsonObject, path, ignoreCase);
 
         if (result == null || result.size() == 0) {
             length = 0;
@@ -436,9 +472,8 @@ public class JsonPath {
      * @return minView.actions[] : [(2,2),(3,3)]
      * minView.actions[].action[] : [(2,5)]
      */
-    private static Map<String, List<Filter>> getFilters(String path) throws Exception {
+    private static Map<String, List<Filter>> getFilters(String path, boolean ignoreCase) throws Exception {
         Map<String, List<Filter>> res = new LinkedHashMap<>();
-
         if (path == null || path.trim().length() == 0) {
             return res;
         }
@@ -449,25 +484,24 @@ public class JsonPath {
             prefix.append(path.substring(0, index) + "[]");
             String r = path.substring(index + 1, path.indexOf(']')).trim();
             if (r.contains("@")) {
-                //conditions
+                //conditions, "?(@.text =~ "(.*)\d{3,}(.*)" || @.text in {"Have a nice day", "Return policy"})"
                 List<Condition> conditions = Condition.getConditions(r);
-
-                List<Filter> filters = new ArrayList<>();
-                for (Condition condition : conditions) {
-                    filters.add(condition);
-                }
                 if (conditions != null && conditions.size() > 0) {
-                    res.put(prefix.toString().trim(), filters);
+                    if (ignoreCase) {
+                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(conditions));
+                    } else {
+                        res.put(prefix.toString().trim(), new ArrayList<Filter>(conditions));
+                    }
                 }
             } else if (r.matches("(.*)([,:])(.*)") || r.contains("last()") || r.contains("first()") || r.contains("*") || r.matches("\\s{0,}(-{0,}\\d+)\\s{0,}")) {
                 //ranges, [2:],[-2],[1,3,5] etc
                 List<Range> ranges = getRange(r);
-                List<Filter> filters = new ArrayList<>();
-                for (Range range : ranges) {
-                    filters.add(range);
-                }
                 if (ranges != null && ranges.size() > 0) {
-                    res.put(prefix.toString().trim(), filters);
+                    if (ignoreCase) {
+                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(ranges));
+                    } else {
+                        res.put(prefix.toString().trim(), new ArrayList<Filter>(ranges));
+                    }
                 }
             } else {
                 throw new Exception("Invalid JsonPath : " + path);
