@@ -5,7 +5,6 @@ import com.google.gson.*;
 import java.io.File;
 import java.util.*;
 
-import static com.jz.json.jsonpath.Range.getRange;
 import static com.jz.json.jsonpath.Utils.getKeys;
 
 /**
@@ -47,7 +46,7 @@ public class JsonPath {
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
-            List<JsonElementWithLevel> res = get(source, path, true);
+            List<JsonElementWithLevel> res = get(source, path, false);
             System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms");
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
@@ -505,23 +504,23 @@ public class JsonPath {
             prefix.append(path.substring(0, index) + "[]");
             String r = path.substring(index + 1, path.indexOf(']')).trim();
             if (r.contains("@")) {
-                //conditions, "?(@.text =~ "(.*)\d{3,}(.*)" || @.text in {"Have a nice day", "Return policy"})"
-                List<Condition> conditions = Condition.getConditions(r);
-                if (conditions != null && conditions.size() > 0) {
+                //filters, "?(@.text =~ "(.*)\d{3,}(.*)" || @.text in {"Have a nice day", "Return policy"})"
+                List<Filter> filters = Condition.getConditions(r);
+                if (filters != null && filters.size() > 0) {
                     if (ignoreCase) {
-                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(conditions));
+                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(filters));
                     } else {
-                        res.put(prefix.toString().trim(), new ArrayList<Filter>(conditions));
+                        res.put(prefix.toString().trim(), new ArrayList<Filter>(filters));
                     }
                 }
             } else if (r.matches("(.*)([,:])(.*)") || r.contains("last()") || r.contains("first()") || r.contains("*") || r.matches("\\s{0,}(-{0,}\\d+)\\s{0,}")) {
-                //ranges, [2:],[-2],[1,3,5] etc
-                List<Range> ranges = getRange(r);
-                if (ranges != null && ranges.size() > 0) {
+                //filters, [2:],[-2],[1,3,5] etc
+                List<Filter> filters = Range.getRange(r);
+                if (filters != null && filters.size() > 0) {
                     if (ignoreCase) {
-                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(ranges));
+                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(filters));
                     } else {
-                        res.put(prefix.toString().trim(), new ArrayList<Filter>(ranges));
+                        res.put(prefix.toString().trim(), new ArrayList<Filter>(filters));
                     }
                 }
             } else {

@@ -1,8 +1,12 @@
 
 package com.jz.json.jsonpath;
 
+import com.google.common.collect.Lists;
+
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author jzfeng
@@ -10,6 +14,7 @@ import java.util.List;
 
 //  x >= start && x <= end
 public class Range implements Filter {
+    private static final int LARGEST_PRIME_NUMBER = 2147483629;
     private int start;
     private int end;
 
@@ -49,12 +54,13 @@ public class Range implements Filter {
      *          $..book[?(@.author =~ /.*REES/i)]	All books matching regex (ignore case)
      */
 
-    public static List<Range> getRange(String r) {
+    public static List<Filter> getRange(String r) {
+        if (r == null || r.length() == 0 || r.matches("(\\s{0,}[><=!]{1}[=~]{0,1}\\s{0,})")) {
+            return new ArrayList<Filter>();
+        }
+
         List<Range> result = new ArrayList<>();
         r = r.trim();
-        if (r == null || r.length() == 0 || r.matches("(\\s{0,}[><=!]{1}[=~]{0,1}\\s{0,})")) {
-            return result;
-        }
 
         if (r.equalsIgnoreCase("first()")) {
             result.add(new Range(0, 0));
@@ -95,11 +101,85 @@ public class Range implements Filter {
             result.add(new Range(Integer.parseInt(r), Integer.parseInt(r)));
         }
 
-        return result;
+        return new ArrayList<Filter>(result);
+    }
+
+
+
+    private static boolean isPrime(int n) {
+        if (n < 2) {
+            return false;
+        }
+        if (n == 2) {
+            return true;
+        }
+        if (n % 2 == 0) {
+            return false;
+        }
+
+        for (int i = 3; i * i <= n; i = i + 2) {
+            if (n % i == 0) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static int nextPrime(int n) {
+        if(n % 2 == 0) {
+            n = n - 1;
+        }
+        while(!isPrime(n)) {
+            n = n - 2;
+        }
+
+        return n;
+    }
+
+    public static void main(String[] args) {
+
+        int tm = Integer.MAX_VALUE;
+        long a = (long)tm * (long)1000;
+        int b = (int)(a % LARGEST_PRIME_NUMBER);
+
+        List<Range> l1 = Lists.newArrayList(new Range(1,3), new Range(4,5));
+        List<Range> l2 = Lists.newArrayList(new Range(1,3), new Range(4,5));
+        Set<Range> res = new HashSet<>();
+        for(Range range : l1) {
+            res.add(range);
+        }
+        for(Range range : l2) {
+            res.add(range);
+        }
+
+        System.out.println(res.size());
     }
 
     @Override
     public String toString() {
         return "Start : " + start + " , end :" + end;
+    }
+
+    @Override
+    public int hashCode() {
+        long hashcode = (long)String.valueOf(start).hashCode() * (long)(String.valueOf(end).hashCode());
+        return (int)(hashcode % (long)LARGEST_PRIME_NUMBER);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj instanceof Range) {
+            Range range = (Range) obj;
+            if (this.start == range.start && this.end == range.end) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

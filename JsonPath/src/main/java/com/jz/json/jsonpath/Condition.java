@@ -98,21 +98,21 @@ public class Condition implements Filter {
     }
 
 
-    // to-do: refactoring : merge getConditions and getLogicalOperators
+    // to-do: refactoring : merge getRange and getLogicalOperators
 
     /**
      * @param r sample parameter:  r = "?(@.author=="Evelyn Waugh" && @.price > 12 || @.category == "reference")"
      * @return
      */
-    public static List<Condition> getConditions(String r) throws Exception {
+    public static List<Filter> getConditions(String r) throws Exception {
+        if(r == null || r.length() == 0 || !r.contains("@.")) {
+            return new ArrayList<Filter>();
+        }
+
         r = r.trim();
         List<String> logicalOperators = getLogicalOperators(r);
         List<Condition> conditions = new ArrayList<>();
-        if (r == null || r.length() == 0 || !r.contains("@.")) {
-            return conditions;
-        }
         if (r.trim().startsWith("?")) {
-//            r = r.trim().replaceFirst("(.*\\()((.*))(\\).*)", "$2").trim();
             r = r.substring(r.indexOf('(') + 1, r.lastIndexOf(')'));
         }
 
@@ -133,7 +133,7 @@ public class Condition implements Filter {
             throw new Exception(" CONDITION_STRING : " + r + " ; CONDITIONS_GENERATED : " + conditions + ";");
         }
 
-        return conditions;
+        return new ArrayList<Filter>(conditions);
     }
 
     /**
