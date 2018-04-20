@@ -2,9 +2,7 @@ package com.jz.json.jsonpath;
 
 import com.google.common.collect.Sets;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,6 +11,7 @@ import java.util.regex.Pattern;
  */
 
 public class Condition implements Filter {
+    private static final int LARGEST_PRIME_NUMBER = 2147483629;
     private String left;
     private String operator;
     private String right;
@@ -38,6 +37,13 @@ public class Condition implements Filter {
         return true;
     }
 
+    //Unary operator
+    Condition(String left, String operator) {
+        this.left = left.trim();
+        this.operator = operator.trim();
+        this.logical_operator = "";
+    }
+
     //    Binary operator
     Condition(String left, String operator, String right) {
         this.left = left.trim();
@@ -46,12 +52,14 @@ public class Condition implements Filter {
         this.logical_operator = "";
     }
 
-    //Unary operator
-    Condition(String left, String operator) {
+
+    Condition(String left, String operator, String right, String logical_operator) {
         this.left = left.trim();
         this.operator = operator.trim();
-        this.logical_operator = "";
+        this.right = right;
+        this.logical_operator = logical_operator;
     }
+
 
     public String getLeft() {
         return left.trim();
@@ -104,14 +112,14 @@ public class Condition implements Filter {
      * @param r sample parameter:  r = "?(@.author=="Evelyn Waugh" && @.price > 12 || @.category == "reference")"
      * @return
      */
-    public static List<Filter> getConditions(String r) throws Exception {
+    public static List<Condition> getConditions(String r) throws Exception {
+        List<Condition> conditions = new ArrayList<>();
         if(r == null || r.length() == 0 || !r.contains("@.")) {
-            return new ArrayList<Filter>();
+            return conditions;
         }
 
         r = r.trim();
         List<String> logicalOperators = getLogicalOperators(r);
-        List<Condition> conditions = new ArrayList<>();
         if (r.trim().startsWith("?")) {
             r = r.substring(r.indexOf('(') + 1, r.lastIndexOf(')'));
         }
@@ -133,7 +141,7 @@ public class Condition implements Filter {
             throw new Exception(" CONDITION_STRING : " + r + " ; CONDITIONS_GENERATED : " + conditions + ";");
         }
 
-        return new ArrayList<Filter>(conditions);
+        return conditions;
     }
 
     /**
@@ -157,11 +165,6 @@ public class Condition implements Filter {
         List<String> fields = new ArrayList<>();
         String regExp = "(\\s{0,}[><=!]{1}[=~]{0,1}\\s{0,})";
 
-
-       /* if (str.indexOf("=") != -1 && (str.indexOf("=") == str.lastIndexOf("="))) {
-            throw new Exception("\"=\" is not a valid Operator, please use \"==\" instead.");
-        }
-*/
         if (str.matches(".*" + regExp + ".*")) {
             Pattern pattern = Pattern.compile(regExp);
             Matcher m = pattern.matcher(str);
@@ -196,5 +199,24 @@ public class Condition implements Filter {
         return left + " " + operator + " " + (right == null ? "" : right);
     }
 
+    @Override
+    public int hashCode() {
+        return (left.hashCode() + right.hashCode()) * operator.hashCode();
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj instanceof Condition) {
+            Condition condition = (Condition) obj;
+            if (this.left.equals(condition.left) && this.operator.equals(condition.operator) && this.right.equals(condition.right)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

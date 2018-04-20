@@ -3,10 +3,7 @@ package com.jz.json.jsonpath;
 
 import com.google.common.collect.Lists;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author jzfeng
@@ -54,14 +51,13 @@ public class Range implements Filter {
      *          $..book[?(@.author =~ /.*REES/i)]	All books matching regex (ignore case)
      */
 
-    public static List<Filter> getRange(String r) {
+    public static List<Range> getRange(String r) {
+        List<Range> result = new ArrayList<>();
         if (r == null || r.length() == 0 || r.matches("(\\s{0,}[><=!]{1}[=~]{0,1}\\s{0,})")) {
-            return new ArrayList<Filter>();
+            return result;
         }
 
-        List<Range> result = new ArrayList<>();
         r = r.trim();
-
         if (r.equalsIgnoreCase("first()")) {
             result.add(new Range(0, 0));
         } else if (r.equalsIgnoreCase("last()")) {
@@ -101,7 +97,7 @@ public class Range implements Filter {
             result.add(new Range(Integer.parseInt(r), Integer.parseInt(r)));
         }
 
-        return new ArrayList<Filter>(result);
+        return result;
     }
 
 
@@ -137,24 +133,6 @@ public class Range implements Filter {
         return n;
     }
 
-    public static void main(String[] args) {
-
-        int tm = Integer.MAX_VALUE;
-        long a = (long)tm * (long)1000;
-        int b = (int)(a % LARGEST_PRIME_NUMBER);
-
-        List<Range> l1 = Lists.newArrayList(new Range(1,3), new Range(4,5));
-        List<Range> l2 = Lists.newArrayList(new Range(1,3), new Range(4,5));
-        Set<Range> res = new HashSet<>();
-        for(Range range : l1) {
-            res.add(range);
-        }
-        for(Range range : l2) {
-            res.add(range);
-        }
-
-        System.out.println(res.size());
-    }
 
     @Override
     public String toString() {
@@ -182,4 +160,36 @@ public class Range implements Filter {
 
         return false;
     }
+
+
+    public static List<Range> mergeRanges(List<Range> ranges) {
+        if (ranges == null || ranges.size() <= 1) {
+            return new ArrayList<Range>(ranges);
+        }
+
+        Collections.sort(ranges, new RangeComparator());
+
+        List<Range> result = new ArrayList<Range>();
+        Range last = ranges.get(0);
+        for (int i = 1; i < ranges.size(); i++) {
+            Range curt = ranges.get(i);
+            if (curt.start <= last.end) {
+                last.end = Math.max(last.end, curt.end);
+            } else {
+                result.add(last);
+                last = curt;
+            }
+        }
+        result.add(last);
+
+        return result;
+    }
+
+
+    private static class RangeComparator implements Comparator<Range> {
+        public int compare(Range a, Range b) {
+            return a.start - b.start;
+        }
+    }
+
 }

@@ -5,6 +5,8 @@ import com.google.gson.*;
 import java.io.File;
 import java.util.*;
 
+import static com.jz.json.jsonpath.Range.getRange;
+import static com.jz.json.jsonpath.Range.mergeRanges;
 import static com.jz.json.jsonpath.Utils.getKeys;
 
 /**
@@ -33,7 +35,7 @@ public class JsonPath {
         JsonObject source = parser.parse(json).getAsJsonObject();
 
         String[] paths = new String[]
-                {"$.modules.BINSUMMARY.minView.actions[0]",
+                {       "$.modules.BINSUMMARY.minView.actions[0]",
                         "modules.SELLERPRESENCE.sellerName.action.URL",
                         "RETURNS.maxView.value.length()",
                         "RETURNS.maxView.value[0:].label",
@@ -41,13 +43,18 @@ public class JsonPath {
                         "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
                         "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
                         "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]",
-                        "URL"
+                        "URL",
+                        "RETURNS.maxView.value[1:3]",
+                        "RETURNS.maxView.value[-3:-1]"
                 };
+
+        Map<String, List<Filter>> a = getFilters("RETURNS.maxView.value[1,3,4].label.textSpans[0].text", true);
+        Map<String, List<Filter>> filters = getFilters(paths, true);
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
             List<JsonElementWithLevel> res = get(source, path, false);
-            System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms");
+            System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms" + "," + path);
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
             }
@@ -487,50 +494,112 @@ public class JsonPath {
         return length;
     }
 
+
     /**
-     * @param path sample path : $.modules.RETURNS.maxView.store[1,3].book[@.category > 'fiction' and @.price < 10 or @.color == \"red\"].textSpans[0].text
-     * @return minView.actions[] : [(2,2),(3,3)]
-     * minView.actions[].action[] : [(2,5)]
+     * In most cases, you will not need multiple JsonPaths. However in case you have one scenario, it does support.
+     * But keep in mind:
+     * 1 For same JsonPath, both has List<Condition> and List<Range>, it chooses List<Condition>;
+     * 2 For same JsonPath, if it has multiple List<Condition>, it chooses the last one;
+     *
+     * @Author jzfeng
+     * @param paths
+     * @param ignoreCase
+     * @return
+     * @throws Exception
      */
-    private static Map<String, List<Filter>> getFilters(String path, boolean ignoreCase) throws Exception {
-        Map<String, List<Filter>> res = new LinkedHashMap<>();
-        if (path == null || path.trim().length() == 0) {
-            return res;
+
+    private static Map<String, List<Filter>> getFilters(String[] paths, boolean ignoreCase) throws Exception {
+        if(paths == null || paths.length == 0) {
+            return new LinkedHashMap<>();
         }
 
-        StringBuilder prefix = new StringBuilder();
-        int index = 0;
-        while ((index = path.indexOf('[')) != -1) {
-            prefix.append(path.substring(0, index) + "[]");
-            String r = path.substring(index + 1, path.indexOf(']')).trim();
-            if (r.contains("@")) {
-                //filters, "?(@.text =~ "(.*)\d{3,}(.*)" || @.text in {"Have a nice day", "Return policy"})"
-                List<Filter> filters = Condition.getConditions(r);
-                if (filters != null && filters.size() > 0) {
-                    if (ignoreCase) {
-                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(filters));
-                    } else {
-                        res.put(prefix.toString().trim(), new ArrayList<Filter>(filters));
-                    }
-                }
-            } else if (r.matches("(.*)([,:])(.*)") || r.contains("last()") || r.contains("first()") || r.contains("*") || r.matches("\\s{0,}(-{0,}\\d+)\\s{0,}")) {
-                //filters, [2:],[-2],[1,3,5] etc
-                List<Filter> filters = Range.getRange(r);
-                if (filters != null && filters.size() > 0) {
-                    if (ignoreCase) {
-                        res.put(prefix.toString().trim().toLowerCase(), new ArrayList<Filter>(filters));
-                    } else {
-                        res.put(prefix.toString().trim(), new ArrayList<Filter>(filters));
-                    }
-                }
-            } else {
-                throw new Exception("Invalid JsonPath : " + path);
+        Map<String, List<Filter>> conditionMap = new LinkedHashMap<>();
+        Map<String, Set<Range>> rangeMap = new LinkedHashMap<>();
+        for(String path : paths) {
+            if (path == null || path.trim().length() == 0) {
+                continue;
             }
 
-            path = path.substring(path.indexOf(']') + 1);
+            StringBuilder prefix = new StringBuilder();
+            int index = 0;
+            while ((index = path.indexOf('[')) != -1) {
+                prefix.append(path.substring(0, index) + "[]");
+                String r = path.substring(index + 1, path.indexOf(']')).trim();
+                String key = prefix.toString().trim();
+                if (r.contains("@")) { //conditions, "?(@.text =~ "(.*)\d{3,}(.*)" || @.text in {"Have a nice day", "Return policy"})"
+                    List<Condition> conditions = Condition.getConditions(r);
+                    if (conditions != null && conditions.size() > 0) {
+                        if (ignoreCase) {
+                            conditionMap.put(key.toLowerCase(), new ArrayList<Filter>(conditions));
+                        } else {
+                            conditionMap.put(key, new ArrayList<Filter>(conditions));
+                        }
+                    }
+                } else if (r.matches("(.*)([,:])(.*)") || r.contains("last()") || r.contains("first()") || r.contains("*") || r.matches("\\s{0,}(-{0,}\\d+)\\s{0,}")) {
+                    List<Range> ranges = getRange(r);
+                    if (ranges != null && ranges.size() > 0) {
+                        if (ignoreCase) {
+                            key = key.toLowerCase();
+                        }
+
+                        if (rangeMap.containsKey(key)) {
+                            rangeMap.get(key).addAll(ranges);
+                        } else {
+                            rangeMap.put(key, new HashSet<>(ranges));
+                        }
+                    }
+                } else {
+                    throw new Exception("Invalid JsonPath : " + path);
+                }
+
+                path = path.substring(path.indexOf(']') + 1);
+            }
+        }
+
+        Map<String, List<Filter>> rm = processRangeMap(rangeMap);
+
+        return mergeTwoMaps(conditionMap,rm);
+    }
+
+
+    // if same JsonPath, both has List<Condition> and List<Range>, choose List<Condition>;
+    private static Map<String, List<Filter>> mergeTwoMaps(Map<String, List<Filter>> conditionMap, Map<String, List<Filter>> rangeMap) {
+        Map<String, List<Filter>> res = new LinkedHashMap<>();
+        for(Map.Entry<String, List<Filter>> entry : conditionMap.entrySet()) {
+            if(!res.containsKey(entry.getKey())) {
+                res.put(entry.getKey(), entry.getValue());
+            }
+        }
+
+        for(Map.Entry<String, List<Filter>> entry : rangeMap.entrySet()) {
+            if(!res.containsKey(entry.getKey())) {
+                res.put(entry.getKey(), entry.getValue());
+            }
         }
 
         return res;
+    }
+
+    private static Map<String, List<Filter>> processRangeMap(Map<String, Set<Range>> rangeMap) {
+        Map<String, List<Filter>> res = new LinkedHashMap<>();
+        if(rangeMap == null || rangeMap.size() == 0) {
+            return res;
+        }
+
+        for(Map.Entry<String, Set<Range>> entry : rangeMap.entrySet()) {
+            String key = entry.getKey();
+            Set<Range> value = entry.getValue();
+            if(value != null && value.size() > 0) {
+                List<Range> ranges = mergeRanges(new ArrayList<>(value)) ;
+                res.put(key, new ArrayList<Filter>(ranges));
+            }
+        }
+
+        return res;
+    }
+
+    private static Map<String, List<Filter>> getFilters(String path, boolean ignoreCase) throws Exception {
+        return getFilters(new String[]{path}, ignoreCase);
     }
 
     private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
