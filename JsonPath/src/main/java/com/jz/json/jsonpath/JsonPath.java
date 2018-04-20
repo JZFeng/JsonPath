@@ -34,7 +34,7 @@ public class JsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("/Users/jzfeng/Desktop/O.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
-        String[] paths = new String[]
+/*        String[] paths = new String[]
                 {       "$.modules.BINSUMMARY.minView.actions[0]",
                         "modules.SELLERPRESENCE.sellerName.action.URL",
                         "RETURNS.maxView.value.length()",
@@ -46,14 +46,14 @@ public class JsonPath {
                         "URL",
                         "RETURNS.maxView.value[1:3]",
                         "RETURNS.maxView.value[-3:-1]"
-                };
+                };*/
 
-        Map<String, List<Filter>> a = getFilters("RETURNS.maxView.value[1,3,4].label.textSpans[0].text", true);
-        Map<String, List<Filter>> filters = getFilters(paths, true);
+        String[] paths = new String[]{"RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
+        String[] ignoredPaths = new String[]{"RETURNS.maxView.value[3]"};
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
-            List<JsonElementWithLevel> res = get(source, path, false);
+            List<JsonElementWithLevel> res = get(source, path, false, ignoredPaths);
             System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms" + "," + path);
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
@@ -84,7 +84,7 @@ public class JsonPath {
 
         JsonParser parser = new JsonParser();
         JsonObject src = parser.parse(source).getAsJsonObject();
-        res = get(src, path, ignoreCase);
+        res = get(src, path, ignoreCase, new String[]{});
 
         return res;
     }
@@ -98,7 +98,7 @@ public class JsonPath {
      * @author jzfeng
      */
     public static List<JsonElementWithLevel> get(JsonObject source, String path) throws Exception {
-        return get(source, path, false);
+        return get(source, path, false, new String[]{});
     }
 
 
@@ -110,13 +110,14 @@ public class JsonPath {
      * @author jzfeng
      */
     public static List<JsonElementWithLevel> get(
-            JsonObject source, String path, boolean ignoreCase) throws Exception {
+            JsonObject source, String path, boolean ignoreCase, String[] ignoredPaths) throws Exception {
         List<JsonElementWithLevel> result = new ArrayList<>();
         if (path == null || path.length() == 0 || source == null || source.isJsonNull()) {
             return result;
         }
 
-        Map<String, List<Filter>> filters = getFilters(path, ignoreCase); // generate filters from path;;
+        Map<String, List<Filter>> filters = getFilters(path, ignoreCase); // generate filters from path;
+        Map<String, List<Filter>> ignoredFilters = getFilters(ignoredPaths, ignoreCase);
 
         String regex = null;
         if (ignoreCase) {
@@ -126,6 +127,7 @@ public class JsonPath {
         }
 
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
+        Map<String, List<Filter>> ignoredMatchedFilters = new LinkedHashMap<>(); //filters with absolute path;
         Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
 
         boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
@@ -162,17 +164,19 @@ public class JsonPath {
                         queue.offer(tmp);
                         if (ignoreCase) {
                             updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
+                            updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
                             if (level.toLowerCase().matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)  && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase) ) {
                                     result.add(tmp);
                                 }
                             }
                         } else {
                             updateMatchedFilters(level, filters, matchedFilters);
+                            updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                             if (level.matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)  && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase)) {
                                     result.add(tmp);
                                 }
                             }
@@ -187,17 +191,19 @@ public class JsonPath {
                         queue.offer(tmp);
                         if (ignoreCase) {
                             updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
+                            updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
                             if (level.toLowerCase().matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)  && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase)) {
                                     result.add(tmp);
                                 }
                             }
                         } else {
                             updateMatchedFilters(level, filters, matchedFilters);
+                            updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                             if (level.matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase)  && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase) ) {
                                     result.add(tmp);
                                 }
                             }
@@ -231,6 +237,7 @@ public class JsonPath {
             Map<String, List<Filter>> matchedFilters,
             int length,
             boolean ignoreCase
+
                                             ) throws Exception {
         if (matchedFilters == null || matchedFilters.size() == 0) {
             return true;
@@ -473,7 +480,7 @@ public class JsonPath {
         }
 
         int length = 0;
-        List<JsonElementWithLevel> result = get(jsonObject, path, ignoreCase);
+        List<JsonElementWithLevel> result = get(jsonObject, path, ignoreCase, new String[]{});
 
         if (result == null || result.size() == 0) {
             length = 0;
@@ -494,6 +501,16 @@ public class JsonPath {
         return length;
     }
 
+    /**
+     *
+     * @param path
+     * @param ignoreCase
+     * @return
+     * @throws Exception
+     */
+    private static Map<String, List<Filter>> getFilters(String path, boolean ignoreCase) throws Exception {
+        return getFilters(new String[]{path}, ignoreCase);
+    }
 
     /**
      * In most cases, you will not need multiple JsonPaths. However in case you have one scenario, it does support.
@@ -598,9 +615,6 @@ public class JsonPath {
         return res;
     }
 
-    private static Map<String, List<Filter>> getFilters(String path, boolean ignoreCase) throws Exception {
-        return getFilters(new String[]{path}, ignoreCase);
-    }
 
     private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
         if (path == null || path.length() == 0) {
@@ -619,4 +633,5 @@ public class JsonPath {
             return keys.contains(path.substring(0, index));
         }
     }
+
 }
