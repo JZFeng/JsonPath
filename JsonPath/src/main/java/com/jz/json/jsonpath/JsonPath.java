@@ -34,6 +34,8 @@ public class JsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("/Users/jzfeng/Desktop/O.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
+
+
       String[] paths = new String[]
                 {       "$.modules.BINSUMMARY.minView.actions[0]",
                         "modules.SELLERPRESENCE.sellerName.action.URL",
@@ -48,12 +50,12 @@ public class JsonPath {
                         "RETURNS.maxView.value[-3:-1]"
                 };
 
-//        String[] paths = new String[]{"$.modules.SELLERPRESENCE.sellerName.action.URL"};
+//        String[] paths = new String[]{"$.value[1:3]"};
         String[] ignoredPaths = new String[]{};
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
-            List<JsonElementWithLevel> res = get(source, path, true, ignoredPaths);
+            List<JsonElementWithLevel> res = get(source, path, false, ignoredPaths);
             System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms" + "," + path);
             for (JsonElementWithLevel je : res) {
                 System.out.println(je);
@@ -521,9 +523,9 @@ public class JsonPath {
             path = path.substring(path.indexOf(']') + 1);
         }
         prefix.append(path);
-        String regex = "(.*)(\\." + prefix.toString().trim().replaceAll("\\[\\]", "\\\\[.*\\\\]") + ")";
+        String regex = "(.*)\\." + prefix.toString().trim().replaceAll("\\[\\]", "\\\\[\\\\d+\\\\]");
 
-        return regex;
+        return regex  ;
     }
 
 
