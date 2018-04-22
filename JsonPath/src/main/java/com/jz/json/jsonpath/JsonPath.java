@@ -35,29 +35,29 @@ public class JsonPath {
         JsonObject source = parser.parse(json).getAsJsonObject();
 
         String[] paths = new String[]{
-                         "$.modules.BINSUMMARY.minView.actions[0]"
-                        ,"modules.SELLERPRESENCE.sellerName.action.URL"
-                        ,"RETURNS.maxView.value.length()"
-                        ,"RETURNS.maxView.value[0:].label"
-                        ,"RETURNS.maxView.value[*].label.textSpans[0]"
-                        ,"RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
-                        ,"RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text"
-                        ,"RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
-                        ,"URL"
-                        ,"RETURNS.maxView.value[1:3]"
-                        ,"RETURNS.maxView.value[-3:-1]"
-                        ,"RETURNS.maxView.value[-2]"
-                };
+                "$.modules.BINSUMMARY.minView.actions[0]"
+                ,"modules.SELLERPRESENCE.sellerName.action.URL"
+                ,"RETURNS.maxView.value.length()"
+                ,"RETURNS.maxView.value[0:].label"
+                ,"RETURNS.maxView.value[*].label.textSpans[0]"
+                ,"RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
+                ,"RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text"
+                ,"RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
+                ,"URL"
+                ,"RETURNS.maxView.value[1:3]"
+                ,"RETURNS.maxView.value[-3:-1]"
+                ,"RETURNS.maxView.value[-2]"
+        };
 
 //        String[] paths = new String[]{"URL"};
         String[] ignoredPaths = new String[]{
-                "$.modules.PICTURE.mediaList[0].image.originalImg.URL",  //3
-                  "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
-                ,"$.modules.THIRD_PARTY_RESOURCES.js[0].url"  // 1
-                ,"$.modules.BINSUMMARY.minView.actions[1].action.URL" // 2
+                "PICTURE.mediaList[0].image.originalImg.URL",  //3
+                "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
+                ,"THIRD_PARTY_RESOURCES.js[0].url"  // 1
+                ,"BINSUMMARY.minView.actions[1].action.URL" // 2
                 ,"$.modules.WATCH.watching.watchAction.action.URL" // 1
                 ,"$.modules.WATCH.watch.watchAction.action.URL"  // 1
-                ,"$.modules.BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
+                ,"BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
         };
 
         for (String path : paths) {
@@ -139,6 +139,13 @@ public class JsonPath {
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
         Map<String, List<Filter>> ignoredMatchedFilters = new LinkedHashMap<>();
 
+        Set<String> set = new HashSet<>();
+        for (String ignoredPath : ignoredPaths) {
+            if (ignoredPath.indexOf('[') == -1) {
+                set.add(ignoredPath);
+            }
+        }
+
         boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
         boolean isFinished = false;
 
@@ -176,7 +183,7 @@ public class JsonPath {
                             updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
                             if (level.toLowerCase().matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase, true) && !set.contains(level)) {
                                     result.add(tmp);
                                 }
                             }
@@ -185,7 +192,7 @@ public class JsonPath {
                             updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                             if (level.matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase , false)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase , false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase , true) && !set.contains(level)) {
                                     result.add(tmp);
                                 }
                             }
@@ -203,7 +210,7 @@ public class JsonPath {
                             updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
                             if (level.toLowerCase().matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase, true) && !set.contains(level)) {
                                     result.add(tmp);
                                 }
                             }
@@ -212,7 +219,7 @@ public class JsonPath {
                             updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                             if (level.matches(regex)) {
                                 isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase,false)) {
+                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase,false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase,true) && !set.contains(level)) {
                                     result.add(tmp);
                                 }
                             }
@@ -229,14 +236,10 @@ public class JsonPath {
 
         }
 
-        if(ignoredPaths == null || ignoredPaths.length == 0) {
-            return result;
-        }
-
-        return applyIgnoredPathsWithoutFilters(applyIgnoredPathsWithFilters(result, cachedJsonArrays, ignoredMatchedFilters, ignoreCase), ignoredPaths);
+        return result;
     }
 
-    private static List<JsonElementWithLevel> applyIgnoredPathsWithoutFilters(List<JsonElementWithLevel> result, String[] ignoredPaths ) {
+    /*private static List<JsonElementWithLevel> applyIgnoredPathsWithoutFilters(List<JsonElementWithLevel> result, String[] ignoredPaths ) {
         Set<String> set = new HashSet<>();
         for (String path : ignoredPaths) {
             if (path.indexOf('[') == -1) {
@@ -281,7 +284,7 @@ public class JsonPath {
         }
 
         return result;
-    }
+    }*/
 
 
     /**
@@ -296,7 +299,7 @@ public class JsonPath {
             int length,
             boolean ignoreCase,
             boolean ignoringMode
-            ) throws Exception {
+                                            ) throws Exception {
 
         if (matchedFilters == null || matchedFilters.size() == 0) {
             if(ignoringMode) {
@@ -362,60 +365,6 @@ public class JsonPath {
         return true;
     }
 
-
-    private static boolean isMatchingIgnoredFilters(
-            Map<String, JsonArray> cachedJsonArrays,
-            String currentLevel,
-            Map<String, List<Filter>> matchedFilters,
-            int length,
-            boolean ignoreCase
-
-                                                   ) throws Exception {
-        if (matchedFilters == null || matchedFilters.size() == 0) {
-            return false;
-        }
-
-        StringBuilder prefix = new StringBuilder();
-        StringBuilder prepath = new StringBuilder();
-        int index = 0;
-        while ((index = currentLevel.indexOf('[')) != -1) {
-            prepath.append(currentLevel.substring(0, currentLevel.indexOf(']') + 1));
-            prefix.append(currentLevel.substring(0, index) + "[]");
-            int i = Integer.parseInt(currentLevel.substring(index + 1, currentLevel.indexOf(']')));
-            List<Filter> filters = null;
-            if (ignoreCase) {
-                filters = matchedFilters.get(prefix.toString().trim().toLowerCase());
-            } else {
-                filters = matchedFilters.get(prefix.toString().trim());
-            }
-
-            if (filters == null || filters.size() == 0) {
-                return true;
-            }
-
-            boolean isMatched = false;
-            if (filters.get(0) instanceof Range) {
-                isMatched = isMatchingRange(filters, i, length);
-            } else if (filters.get(0) instanceof Condition) {
-                List<Condition> c = new ArrayList<>();
-                for (Filter f : filters) {
-                    c.add((Condition) f);
-                }
-
-                JsonArray jsonArray = cachedJsonArrays.get(prepath.substring(0, prepath.lastIndexOf("[")));
-                isMatched = isMatchingConditions(jsonArray.get(i).getAsJsonObject(), c);
-            }
-
-            if (isMatched) {
-                currentLevel = currentLevel.substring(currentLevel.indexOf(']') + 1);
-            } else {
-                return false;
-            }
-
-        }
-
-        return true;
-    }
 
     /**
      * @param currentLevel
