@@ -11,7 +11,6 @@ import java.util.regex.Pattern;
  */
 
 public class Condition implements Filter {
-    private static final int LARGEST_PRIME_NUMBER = 2147483629;
     private String left;
     private String operator;
     private String right;

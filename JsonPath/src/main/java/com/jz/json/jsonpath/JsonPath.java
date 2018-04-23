@@ -34,8 +34,8 @@ public class JsonPath {
 
         String[] paths = new String[]{
                 "$.modules.BINSUMMARY.minView.actions[0]",
-                "SELLERPRESENCE.sellerName.action.URL"
-                , "RETURNS.maxView.value.length()"
+                "SELLERPRESENCE.sellerName.action.URL",
+                 "RETURNS.maxView.value.length()"
                 , "RETURNS.maxView.value[0:].label"
                 , "RETURNS.maxView.value[*].label.textSpans[0]"
                 , "RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
@@ -47,17 +47,17 @@ public class JsonPath {
                 , "RETURNS.maxView.value[-2]"
         };
 
+
         String[] ignoredPaths = new String[]{
                 "PICTURE.mediaList[0].image.originalImg.URL",  //3
                 "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
                 , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
-                , "BINSUMMARY.minView.actions[1].action.URL" // 2
-                , "WATCH.watching.watchAction.action.URL" // 1
-                , "WATCH.watch.watchAction.action.URL"  // 1
+                , "BINSUMMARY.minView.actions[1].action.URL", // 2
+                "$.modules.WATCH.watching.watchAction.action.URL" // 1
+                , "modules.WATCH.watch.watchAction.action.URL"  // 1
                 , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
 //                total = 11;
         };
-
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
@@ -212,45 +212,83 @@ public class JsonPath {
             }
 
         }
-
-        return applyUniqueIgnoredPaths(result, ignoreCase, ignoredPaths);
+        System.out.println(result);
+        return applyIgnoredPathsWithoutArray(result, ignoredPaths, source);
     }
+
+
+
+    private static List<JsonElementWithLevel> applyIgnoredPathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
+        boolean allAbsoluteJsonPaths =  isAbsoluteJsonPath(ignoredPaths, source );
+        if(allAbsoluteJsonPaths) {
+            return applyIgnoredAbsolutePathsWithoutArray(result, ignoredPaths, source);
+        } else {
+            return applyIgnoredPartialPathsWithoutArray(result, ignoredPaths, source);
+        }
+    }
+
 
     /**
      * Very expensive if you do not enter full JsonPath, N square time complexibility;
      * @param result
-     * @param ignoreCase
      * @param ignoredPaths
      * @return
      */
-    private static List<JsonElementWithLevel> applyUniqueIgnoredPaths(List<JsonElementWithLevel> result, boolean ignoreCase, String[] ignoredPaths) {
+    private static List<JsonElementWithLevel> applyIgnoredAbsolutePathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
         if(ignoredPaths == null || ignoredPaths.length == 0) {
             return result;
         }
 
-        Set<String> set  = new HashSet<>();
-        for (String ignoredPath : ignoredPaths) {
-            if (ignoredPath.indexOf('[') == -1) {
-                if (ignoreCase) {
-                    ignoredPath = ignoredPath.toLowerCase();
-                }
-                set.add(ignoredPath);
+        Set<String> set1  = new HashSet<>();
+        for (String path : ignoredPaths) {
+            if (!path.startsWith("$")) {
+                path = "$." + path;
             }
-        }
-        List<String> regexs = new ArrayList<>();
-        for(String str : set) {
-            regexs.add(generateRegex(str, ignoreCase));
+            set1.add(path);
         }
 
         Iterator<JsonElementWithLevel> itr = result.iterator();
         while(itr.hasNext()) {
             JsonElementWithLevel je = itr.next();
             String level = je.getLevel();
-            if(ignoreCase) {
-                level = level.toLowerCase();
+            if(set1.contains(level)) {
+                itr.remove();
             }
-            for(String regex : regexs) {
-                if(level.matches(regex)) {
+        }
+
+        return result;
+    }
+
+
+    /**
+     * Very expensive if you do not enter full JsonPath, N square time complexibility;
+     * @param result
+     * @param ignoredPaths
+     * @return
+     */
+    private static List<JsonElementWithLevel> applyIgnoredPartialPathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
+        if (ignoredPaths == null || ignoredPaths.length == 0) {
+            return result;
+        }
+
+        Set<String> set = new HashSet<>();
+        for (String ignoredPath : ignoredPaths) {
+            if (ignoredPath.indexOf('[') == -1) {
+                set.add(ignoredPath);
+            }
+        }
+
+        List<String> regexs = new ArrayList<>();
+        for (String str : set) {
+            regexs.add(generateRegex(str, false));
+        }
+
+        Iterator<JsonElementWithLevel> itr = result.iterator();
+        while (itr.hasNext()) {
+            JsonElementWithLevel je = itr.next();
+            String level = je.getLevel();
+            for (String regex : regexs) {
+                if (level.matches(regex)) {
                     itr.remove();
                     break;
                 }
@@ -260,6 +298,7 @@ public class JsonPath {
 
         return result;
     }
+
 
     /**
      * @param currentLevel   $.courses[i].grade
@@ -712,23 +751,35 @@ public class JsonPath {
     }
 
 
-    private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
-        if (path == null || path.length() == 0) {
-            throw new IllegalArgumentException("Jason path can not be empty.");
-        }
-
-        path = path.trim();
-        if (path.startsWith("$")) {
+    private static boolean isAbsoluteJsonPath(String[] paths, JsonObject source) {
+        if (paths == null || paths.length == 0) {
             return true;
         }
+
         Set<String> keys = getKeys(source);
-        int index = path.indexOf(".");
-        if (index == -1) {
-            return false;
-        } else {
-            return keys.contains(path.substring(0, index));
+        for(String path : paths) {
+            path = path.trim();
+            if (path.startsWith("$")) {
+                continue;
+            }
+
+            int index = path.indexOf(".");
+            if (index == -1) {
+                if (!keys.contains(path)) {
+                    return false;
+                }
+            } else {
+                if (!keys.contains(path.substring(0, index))) {
+                    return false;
+                }
+            }
         }
+
+        return true;
     }
 
+    private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
+        return isAbsoluteJsonPath(new String[]{path}, source);
+    }
 
 }
