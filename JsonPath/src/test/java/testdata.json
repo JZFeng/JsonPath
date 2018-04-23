@@ -1,0 +1,1639 @@
+{
+  "meta": {
+    "sequence": [
+      "TITLE",
+      "PICTURE",
+      "RETURNS",
+      "BINSUMMARY",
+      "BID_LAYER",
+      "SELLERPRESENCE",
+      "ABOUTTHISITEM",
+      "ITEMSPECIFICS",
+      "ITEMDESC",
+      "DELIVERY",
+      "INSTOREPICKUP",
+      "HANDLINGCONTENT",
+      "ITEMLOCATION",
+      "GLOBALSHIPPING",
+      "TAXES",
+      "COMMITTOBUY",
+      "PAYMENTS",
+      "RSPSECTION",
+      "CHARITY",
+      "WATCH",
+      "CVIP_STATUSMESSAGE",
+      "AUTOREFRESH",
+      "QUANTITY",
+      "STATUSMESSAGE",
+      "INCENTIVES",
+      "EBAYGUARANTEE",
+      "MARS",
+      "EBAYPLUS",
+      "OTHER_ACTIONS",
+      "THIRD_PARTY_RESOURCES",
+      "ATFHIGHLIGHTSTABLE",
+      "RTM",
+      "COMMONCONTENT",
+      "SEQUENCE",
+      "TOPRATEDSELLER",
+      "SHIPS_TO",
+      "EXCLUSIONS",
+      "MFE",
+      "ITEMAUTHENTICATETERMS",
+      "LOGISTICS_ATF"
+    ]
+  },
+  "modules": {
+    "RTM": {
+      "_type": "RTMViewModel",
+      "context": {
+        "IS_SECURE": false,
+        "ITEM_FORMAT": 9,
+        "USER_LOCATION_COUNTRY_ID": 1,
+        "PAYPAL_ACCEPTED": true,
+        "BROWSER_IP_ADDRESS": "10.237.185.129",
+        "ZERO_INSERTION_FEE": false,
+        "SITE_ID": "0",
+        "ITEM_BIN_PRICE": 299,
+        "ETRS_TWO_LISTING": false,
+        "ITEM_ID": "230007897316",
+        "ITEM_CATEGORY": "12",
+        "IS_NOT_CLASSIC": "1",
+        "USER_STATE": 1,
+        "PAGE_CONFIG": 0,
+        "PAGE_ID": "2056116",
+        "BROWSER_USER_AGENT": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
+        "ITEM_TITLE": "Fixed Price immediate payment Antiques,Other Antiques",
+        "SELLER_ID": "grafpdx801",
+        "CLIENT_CHANNEL": "mweb",
+        "TCAT": "12",
+        "ITEM_LISTING_SITEID": 0
+      },
+      "c": "1H4sIAAAAAAAAAD2QXUvDMBSG7/srDnizwexOvtpkkoshbMosEzbQC2F0bebC+hG7Dqe/3qSKNwknOe95n/fcLDoLWd4BQ8B0JpIZV7DMtre+QASKREaOodQkcpxTjZEjimtCI4fDyRjRBGPK0phIEROqwhvqrP22VZVPRYwwyvLCNn17Pt7BY9ObyjsWsN7AKxDcEbpLxjB3rjIvZr+y/VT4YSyB0ephmz1NoLInA0tTnNox3B+7tjbTxI+NGaPeUBLY5Ie8s3+yyFHBBk7OtYoKW3rOtwsihgiC6PrT7H2Tz4ThSjVVKg79QzqqhH7v8oMrrzIoKKJe2Ksp4bmzhQFb16a0eW/A5V+1aXqYN739uJjzZN0fTfdfejNGw9qI5AOOZJqiSAgJiKn4XaXSlHm0VKqUhY8kKCgPwh9T8WRgmwEAAA==",
+      "params": [
+        20455,
+        20322,
+        20311,
+        699
+      ]
+    },
+    "SELLERPRESENCE": {
+      "_type": "SellerPresenceViewModel",
+      "clientSideTracking": {
+        "SELLER_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l4636"
+          }
+        },
+        "CONTACT_SELLER_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l6449"
+          }
+        }
+      },
+      "accessibilityText": {
+        "CLOSE_DIALOG": {
+          "text": "Close Dialog"
+        },
+        "SECTION_HEADER": {
+          "text": "About this seller Details"
+        }
+      },
+      "header": {
+        "textSpans": [
+          {
+            "text": "About this seller"
+          }
+        ]
+      },
+      "feedbackScore": {
+        "textSpans": [
+          {
+            "text": " (1000)",
+            "accessibilityText": "Feedback Score"
+          }
+        ]
+      },
+      "feedbackPercentage": {
+        "textSpans": [
+          {
+            "text": "100% Positive feedback"
+          }
+        ],
+        "value": 100
+      },
+      "askSeller": {
+        "textSpans": [
+          {
+            "text": "Contact seller",
+            "action": {
+              "type": "NAV",
+              "URL": "http://contact.m.qa.ebay.com/ws/eBayISAPI.dll?FindAnswers&requested=grafpdx801&_trksid=p2349624.m2547.l7859&rt=nc&iid=230007897316"
+            }
+          }
+        ]
+      },
+      "sellerOhterItems": {
+        "textSpans": [
+          {
+            "text": "Seller's other items",
+            "action": {
+              "type": "NAV",
+              "URL": "http://www.m.qa.ebay.com/sch/i.html?sid=grafpdx801&isRefine=true&_pgn=1"
+            }
+          }
+        ]
+      },
+      "sellerName": {
+        "textSpans": [
+          {
+            "text": "grafpdx801"
+          }
+        ],
+        "action": {
+          "type": "NAV",
+          "trackingList": [
+            {
+              "eventFamily": "ITM",
+              "eventAction": "ACTN",
+              "actionKinds": [
+                "NAV"
+              ],
+              "operationId": "2349624",
+              "flushImmediately": false,
+              "eventProperty": {
+                "sid": "p2349624.m2547.l4636"
+              }
+            }
+          ],
+          "URL": "http://www.m.qa.ebay.com/seller?sid=grafpdx801&_trksid=p2349624.m2547.l7859"
+        }
+      }
+    },
+    "CHARITY": {
+      "_type": "CharityViewModel",
+      "empty": true
+    },
+    "BID_LAYER": {
+      "_type": "BidLayerViewModel",
+      "header": {
+        "textSpans": [
+          {
+            "text": "Place Bid"
+          }
+        ]
+      },
+      "binBid": false,
+      "liveAuction": false
+    },
+    "LOGISTICS_ATF": {
+      "_type": "LogisticsATFViewModel",
+      "logisticsMessage": [
+        {
+          "textSpans": [
+            {
+              "text": "Est. Delivery "
+            },
+            {
+              "text": "Tue, Apr 03 - Fri, Apr 06",
+              "styles": [
+                "BOLD"
+              ]
+            }
+          ]
+        }
+      ],
+      "deliveryUpsellModel": {
+        "_type": "DeliveryUpsellViewModel",
+        "upsellDays": 0
+      }
+    },
+    "EXCLUSIONS": {
+      "_type": "ShippingExclusionstViewModel"
+    },
+    "TAXES": {
+      "_type": "TaxesViewModel"
+    },
+    "ITEMDESC": {
+      "_type": "ItemDescriptionViewModel",
+      "clientSideTracking": {
+        "DESCRIPTION_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2547.l4634"
+          }
+        }
+      },
+      "accessibilityText": {
+        "CLOSE_DIALOG": {
+          "text": "Close Dialog"
+        },
+        "SECTION_HEADER": {
+          "text": "Item description Details"
+        }
+      },
+      "header": {
+        "textSpans": [
+          {
+            "text": "Item description"
+          }
+        ]
+      },
+      "itemDescription": {
+        "action": {
+          "type": "NAV",
+          "tracking": {
+            "eventFamily": "ITM",
+            "eventAction": "ACTN",
+            "actionKinds": [
+              "NAV"
+            ],
+            "operationId": "2349624",
+            "flushImmediately": false,
+            "eventProperty": {
+              "itm": "230007897316",
+              "sid": "p2349624.m3555.l6241"
+            }
+          },
+          "URL": "http://vi.raptor.qa.ebaydesc.com/ws/eBayISAPI.dll?ViewItemDescV4&item=230007897316&category=12&pm=1&ds=0&t=1522421809322"
+        }
+      },
+      "treatment": false,
+      "readMore": {
+        "text": "Read more"
+      }
+    },
+    "AUTOREFRESH": {
+      "_type": "AutoRefreshViewModel",
+      "refreshInSeconds": 0
+    },
+    "DELIVERY": {
+      "_type": "DeliveryViewModel",
+      "minView": [
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Delivery to United States"
+              }
+            ]
+          },
+          "value": [
+            [
+              {
+                "textSpans": [
+                  {
+                    "text": "Est. Tue, Apr 03 - Fri, Apr 06"
+                  }
+                ]
+              },
+              {
+                "textSpans": [
+                  {
+                    "text": "From San Jose, CA"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ],
+      "maxView": [
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Delivery to United States"
+              }
+            ]
+          },
+          "value": [
+            [
+              {
+                "textSpans": [
+                  {
+                    "text": "USPS Priority Mail Flat Rate Envelope<sup>®</sup>",
+                    "styles": [
+                      "BOLD"
+                    ]
+                  }
+                ]
+              },
+              {
+                "textSpans": [
+                  {
+                    "text": "$3.00"
+                  }
+                ]
+              },
+              {
+                "textSpans": [
+                  {
+                    "text": "Est. Tue, Apr 03 - Fri, Apr 06"
+                  }
+                ]
+              }
+            ]
+          ]
+        }
+      ]
+    },
+    "WATCH": {
+      "_type": "WatchViewModel",
+      "clientSideTracking": {
+        "UNWATCH_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2548.l6254"
+          }
+        }
+      },
+      "state": "watch",
+      "watching": {
+        "watchAction": {
+          "text": "Unwatch",
+          "type": "SECONDARY",
+          "action": {
+            "type": "NAV",
+            "URL": "https://www.m.qa.ebay.com/itm/watch/WatchListDelete?&itemIds=230007897316&aegis_attributes=1%3D1&_trksid=p2349624.l4570&tagId=-99"
+          }
+        }
+      },
+      "watch": {
+        "watchAction": {
+          "text": "Watch",
+          "type": "SECONDARY",
+          "action": {
+            "type": "NAV",
+            "URL": "https://www.m.qa.ebay.com/itm/watch/WatchListAddAjax?_trksid=p2349624.l1360&SubmitAction.AddToListVI=x&item=230007897316&rt=nc&wt=51a7fdef085c9f761d8085af07321b50&ssPageName=VIP:watchlink:top:en&aegis_attributes=1%3D1"
+          },
+          "value": {
+            "signInUrl": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&ru=https%3A%2F%2Fwww.m.qa.ebay.com%2Fitm%2Fwatch%2FWatchListAdd%3F_trksid%3Dp2349624.l1360%26SubmitAction.AddToListVI%3Dx%26item%3D230007897316%26rt%3Dnc%26wt%3D51a7fdef085c9f761d8085af07321b50%26ssPageName%3DVIP%3Awatchlink%3Atop%3Aen"
+          }
+        }
+      },
+      "errors": {
+        "watch_list_already_full": "Watch list is already full",
+        "watch_select_sku_error": "Please select options for watching",
+        "watch_remove_action_error": "Unable to remove from watchlist",
+        "watch_fail": "Failed to perform the action",
+        "watch_already_in_list": "Item is already in your watch list",
+        "watch_overflow": "You have exceeded the limit"
+      },
+      "msku": false
+    },
+    "MFE": {
+      "_type": "MFEViewModel",
+      "scandalCtx": {
+        "ads": {
+          "100640": "{\"targetingParameters\":null,\"fallbackContent\":null,\"fallback\":true,\"pageId\":0,\"placementId\":100640,\"provider\":null,\"providerParameters\":null}"
+        }
+      },
+      "placements": {
+        "ids": [
+          100640
+        ]
+      },
+      "libUrl": "https://ir.ebaystatic.com/f/buy35awvwy003hqly0xfdlumwyp.js"
+    },
+    "ATFHIGHLIGHTSTABLE": {
+      "_type": "ATFHighlightsTableViewModel",
+      "atfhighlightsTableData": [
+        [
+          {
+            "textSpans": [
+              {
+                "text": "Located in United States"
+              }
+            ]
+          }
+        ]
+      ]
+    },
+    "TOPRATEDSELLER": {
+      "_type": "TopRatedSellerViewModel"
+    },
+    "INSTOREPICKUP": {
+      "_type": "InStorePickUpViewModel"
+    },
+    "ABOUTTHISITEM": {
+      "_type": "AboutThisItemViewModel",
+      "clientSideTracking": {
+        "ABOUT_THIS_ITEM_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l4632"
+          }
+        }
+      },
+      "accessibilityText": {
+        "CLOSE_DIALOG": {
+          "text": "Close Dialog"
+        },
+        "SECTION_HEADER": {
+          "text": "About this item Details"
+        }
+      },
+      "header": {
+        "textSpans": [
+          {
+            "text": "About this item"
+          }
+        ]
+      }
+    },
+    "ITEMSPECIFICS": {
+      "_type": "ItemSpecificsViewModel",
+      "clientSideTracking": {
+        "ABOUT_THIS_ITEM_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m3560.l4632"
+          }
+        }
+      },
+      "minView": [
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Quantity:"
+              }
+            ]
+          },
+          "value": [
+            {
+              "textSpans": [
+                {
+                  "text": "1 sold",
+                  "styles": [
+                    "BOLD",
+                    "EMPHASIS"
+                  ]
+                }
+              ]
+            },
+            {
+              "textSpans": [
+                {
+                  "text": "More than 10 available"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "eBay Item Number: "
+              }
+            ]
+          },
+          "value": [
+            {
+              "textSpans": [
+                {
+                  "text": "230007897316"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Item Ending:"
+              }
+            ]
+          },
+          "value": [
+            {
+              "textSpans": [
+                {
+                  "text": "Apr 21, 2018, 09:37 AM PDT"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "COMMONCONTENT": {
+      "_type": "CommonContentViewModel",
+      "clientSideTracking": {
+        "VINODE_OVERLAY_COMMON_CLOSE": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l8419"
+          }
+        },
+        "SCROLLED_TO_BOTTOM": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l8142"
+          }
+        },
+        "VINODE_OVERLAY_COMMON_OPEN": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l8418"
+          }
+        }
+      },
+      "content": {
+        "OR_CONTENT": {
+          "textSpans": [
+            {
+              "text": "or"
+            }
+          ]
+        }
+      }
+    },
+    "QUANTITY": {
+      "_type": "QuantityViewModel",
+      "displayLabel": {
+        "textSpans": [
+          {
+            "text": "Quantity :"
+          }
+        ]
+      },
+      "maxQuantity": {
+        "value": 12
+      }
+    },
+    "MARS": {
+      "_type": "MetaDataViewModel",
+      "metaData": [
+        "<meta Property=\"og:description\" Content=\"Fixed Price immediate payment | Antiques, Other Antiques | eBay!\" />",
+        "<link rel=\"alternate\" media=\"only screen and (max-width: 640px)\" href=\"https://m.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=EC\" hreflang=\"es-ec\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=PR\" hreflang=\"es-pr\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=CL\" hreflang=\"es-cl\" />",
+        "<meta name=\"description\" content=\"Fixed Price immediate payment | Antiques, Other Antiques | eBay!\" />",
+        "<meta name=\"twitter:card\" content=\"summary\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=HN\" hreflang=\"es-hn\" />",
+        "<meta name=\"referrer\" content=\"unsafe-url\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=VE\" hreflang=\"es-ve\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=BO\" hreflang=\"es-bo\" />",
+        "<meta name=\"y_key\" content=\"acf32e2a69cbc2b0\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=AR\" hreflang=\"es-ar\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=PA\" hreflang=\"es-pa\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=NI\" hreflang=\"es-ni\" />",
+        "<link rel=\"canonical\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316\" />",
+        "<meta Property=\"og:image\" Content=\"https://i.ebayimg.com/images/i/230007897316-0-1/s-l1000.jpg\" />",
+        "<meta Property=\"og:type\" Content=\"ebay-objects:item\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=CR\" hreflang=\"es-cr\" />",
+        "<meta name=\"twitter:image\" content=\"https://i.ebayimg.com/images/i/230007897316-0-1/s-l1000.jpg\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316\" hreflang=\"en-us\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=RU\" hreflang=\"ru-ru\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=UY\" hreflang=\"es-uy\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=PY\" hreflang=\"es-py\" />",
+        "<meta name=\"twitter:description\" content=\"Fixed Price immediate payment | Antiques, Other Antiques | eBay!\" />",
+        "<meta name=\"twitter:site\" content=\"@eBay\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=BR\" hreflang=\"pt-br\" />",
+        "<title>Fixed Price immediate payment  | eBay</title>",
+        "<meta Property=\"og:site_name\" Content=\"eBay\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=GT\" hreflang=\"es-gt\" />",
+        "<meta name=\"msvalidate.01\" content=\"34E98E6F27109BE1A9DCF19658EEEE33\" />",
+        "<meta name=\"yandex-verification\" content=\"6e11485a66d91eff\" />",
+        "<meta Property=\"og:url\" Content=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=KZ\" hreflang=\"ru-kz\" />",
+        "<link rel=\"alternate\" href=\"android-app://com.ebay.mobile/ebay/link/?nav=item.view&amp;id=230007897316&amp;referrer=http%3A%2F%2Frover.ebay.com%2Froverns%2F1%2F711-13271-9788-0%3Fmpcl%3Dhttp%253A%252F%252Fwww.ebay.com%252Fitm%252FFixed-Price-immediate-payment-%252F230007897316\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=BY\" hreflang=\"ru-by\" />",
+        "<meta name=\"twitter:title\" content=\"Fixed Price immediate payment\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=SV\" hreflang=\"es-sv\" />",
+        "<meta name=\"google-site-verification\" content=\"8kHr3jd3Z43q1ovwo0KVgo_NZKIEMjthBxti8m8fYTg\" />",
+        "<meta Property=\"og:title\" Content=\"Fixed Price immediate payment  | eBay\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=CO\" hreflang=\"es-co\" />",
+        "<meta property=\"fb:app_id\" content=\"102628213125203\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=MX\" hreflang=\"es-mx\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=DO\" hreflang=\"es-do\" />",
+        "<link rel=\"alternate\" href=\"https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_ul=PE\" hreflang=\"es-pe\" />",
+        "<!-- NGMARS SIGNATURE -->"
+      ]
+    },
+    "PICTURE": {
+      "_type": "PictureViewModel",
+      "meta": {
+        "trackingList": [
+          {
+            "eventFamily": "ITM",
+            "eventAction": "EXPC",
+            "operationId": "2349624",
+            "flushImmediately": false,
+            "eventProperty": {
+              "sid": "p2349624.m2570"
+            }
+          }
+        ]
+      },
+      "clientSideTracking": {
+        "IMAGE_GALLERY_GROUP_VIEW_DONE": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l6237"
+          }
+        },
+        "IMAGE_GALLERY_SINGLE_VIEW_IMAGE_SWIPE": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l6238"
+          }
+        },
+        "IMAGE_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l2548"
+          }
+        },
+        "IMAGE_SWIPE": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l3875"
+          }
+        },
+        "IMAGE_GALLERY_GROUP_VIEW_ICON": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l6235"
+          }
+        },
+        "IMAGE_GALLERY_GROUP_VIEW_IMAGE_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l6236"
+          }
+        },
+        "IMAGE_GALLERY_SINGLE_VIEW_IMAGE_DONE": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "itm": "230007897316",
+            "sid": "p2349624.m2570.l6234"
+          }
+        }
+      },
+      "accessibilityText": {
+        "CLOSE_DIALOG": {
+          "text": "Close Dialog"
+        },
+        "SECTION_HEADER": {
+          "text": "Image Gallery"
+        }
+      },
+      "selectedIndex": 0,
+      "aspectType": "RECTANGLE",
+      "mediaList": [
+        {
+          "navTitle": {
+            "textSpans": [
+              {
+                "text": "1 of 1"
+              }
+            ]
+          },
+          "image": {
+            "thumbnail": {
+              "title": "Picture 1 of 1",
+              "imageId": "Vj0AAOSwWapas9YX",
+              "imageIdType": "ZOOM_GUID",
+              "originalSize": {
+                "height": 64,
+                "width": 64
+              },
+              "URL": "https://i.qa.ebayimg.com/images/g/Vj0AAOSwWapas9YX/s-l64.png"
+            },
+            "originalImg": {
+              "title": "Fixed Price immediate payment",
+              "imageId": "Vj0AAOSwWapas9YX",
+              "imageIdType": "ZOOM_GUID",
+              "originalSize": {
+                "height": 400,
+                "width": 400
+              },
+              "URL": "https://i.qa.ebayimg.com/images/g/Vj0AAOSwWapas9YX/s-l400.png"
+            },
+            "zoomImg": {
+              "title": "Picture 1 of 1",
+              "imageId": "Vj0AAOSwWapas9YX",
+              "imageIdType": "ZOOM_GUID",
+              "originalSize": {
+                "height": 1600,
+                "width": 1600
+              },
+              "URL": "https://i.qa.ebayimg.com/images/g/Vj0AAOSwWapas9YX/s-l1600.png"
+            }
+          },
+          "uploadedImageSize": {
+            "height": 514,
+            "width": 948
+          }
+        }
+      ],
+      "nav": {
+        "enabled": false,
+        "nextTitle": {
+          "textSpans": [
+            {
+              "text": "next-arrow"
+            }
+          ]
+        },
+        "prevTitle": {
+          "textSpans": [
+            {
+              "text": "previous-arrow"
+            }
+          ]
+        },
+        "close": {
+          "textSpans": [
+            {
+              "text": "Close button."
+            }
+          ]
+        },
+        "gallery": {
+          "textSpans": [
+            {
+              "text": "Gallery button."
+            }
+          ]
+        },
+        "enlarge": {
+          "textSpans": [
+            {
+              "text": "Enlarge (each picture is a link)."
+            }
+          ]
+        }
+      },
+      "photosLabel": {
+        "textSpans": [
+          {
+            "text": "Photos (1)"
+          }
+        ]
+      }
+    },
+    "STATUSMESSAGE": {
+      "_type": "StatusMessageViewModel"
+    },
+    "SEQUENCE": {
+      "_type": "SequenceViewModel",
+      "sequence": "[ [ \"PICTURE\", \"REVIEWS_ATF\", \"BIDSUMMARY\", \"BIDSUMMARY.bidAction\", \"ABIN_SEPARATOR\", \"BINSUMMARY\", \"MSKU\", \"QUANTITY\", \"BINSUMMARY.minView.actions\", \"BIN_OFFER_SEPARATOR\", \"OFFERSUMMARY\", \"OFFERSUMMARY.actions\", \"WATCH\", \"BID_LAYER\", \"COMMITTOBUY\" ], [ \"SME\", \"ABOUTTHISITEM\", \"CHARITY\", \"EBAYPLUS\", \"RSPSECTION\", \"SELLERPRESENCE\", \"OTHER_ACTIONS.shareAction\", \"OTHER_ACTIONS.soltAction\", \"OTHER_ACTIONS.reportItemAction\", \"RTM0\", \"REVIEWS_BTF\", \"MERCH\", \"RTM1\" ] ]"
+    },
+    "ITEMAUTHENTICATETERMS": {
+      "_type": "ItemAuthenticityViewModel"
+    },
+    "THIRD_PARTY_RESOURCES": {
+      "_type": "ThirdPartyResourcesViewModel",
+      "js": [
+        {
+          "moduleName": "share",
+          "url": "https://ir.ebaystatic.com/cr/v/c1/share-widget-https-3.js"
+        }
+      ]
+    },
+    "RSPSECTION": {
+      "_type": "RSPSectionViewModel",
+      "clientSideTracking": {
+        "SHIPPING_RETURNS_PAYMENT": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2547.l4635"
+          }
+        }
+      },
+      "accessibilityText": {
+        "CLOSE_DIALOG": {
+          "text": "Close Dialog"
+        },
+        "SECTION_HEADER": {
+          "text": "Shipping, Returns amp; Payments Details"
+        }
+      },
+      "minView": {
+        "header": {
+          "textSpans": [
+            {
+              "text": "Shipping, Returns & Payments"
+            }
+          ]
+        }
+      },
+      "maxView": {
+        "header": {
+          "textSpans": [
+            {
+              "text": "Shipping"
+            }
+          ]
+        }
+      },
+      "sequence": [
+        "LOCATION",
+        "DELIVERY",
+        "INSTOREPICKUP",
+        "RETURNS",
+        "PAYMENTS",
+        "GLOBALSHIPPING",
+        "REWARDS"
+      ]
+    },
+    "INCENTIVES": {
+      "_type": "IncentivesViewModel"
+    },
+    "PAYMENTS": {
+      "_type": "PaymentsViewModel",
+      "header": {
+        "textSpans": [
+          {
+            "text": "Payments"
+          }
+        ]
+      },
+      "minView": [
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Payments"
+              }
+            ]
+          },
+          "value": {
+            "paymentLogos": {
+              "textSpans": [
+                {
+                  "text": ""
+                }
+              ],
+              "value": [
+                "paypal",
+                "visa",
+                "mastercard",
+                "amex",
+                "discover"
+              ]
+            },
+            "paymentMethods": [
+              {
+                "textSpans": [
+                  {
+                    "text": "PayPal"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "maxView": {
+        "header": {
+          "textSpans": [
+            {
+              "text": "Payments"
+            }
+          ]
+        },
+        "paymentLogos": {
+          "textSpans": [
+            {
+              "text": "PayPal"
+            }
+          ],
+          "value": [
+            "paypal",
+            "visa",
+            "mastercard",
+            "amex",
+            "discover"
+          ]
+        },
+        "immediatePayment": {
+          "textSpans": [
+            {
+              "text": "Immediate payment of "
+            },
+            {
+              "text": "$299.00"
+            },
+            {
+              "text": " is required"
+            }
+          ]
+        },
+        "creditCardSubText": {
+          "textSpans": [
+            {
+              "text": "Credit Cards processed by PayPal"
+            }
+          ]
+        }
+      }
+    },
+    "EBAYPLUS": {
+      "_type": "EbayPlusViewModel",
+      "empty": true
+    },
+    "SHIPS_TO": {
+      "_type": "ShipsToLocationViewModel",
+      "minView": {
+        "label": {
+          "textSpans": [
+            {
+              "text": "Ships to"
+            }
+          ]
+        },
+        "value": [
+          {
+            "textSpans": [
+              {
+                "text": "United States"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "GLOBALSHIPPING": {
+      "_type": "GlobalShippingViewModel"
+    },
+    "CVIP_STATUSMESSAGE": {
+      "_type": "ClosedItemMessageModel"
+    },
+    "HANDLINGCONTENT": {
+      "_type": "HandlingContentViewModel",
+      "label": {
+        "textSpans": [
+          {
+            "text": "Handling Time"
+          }
+        ]
+      },
+      "value": [
+        {
+          "textSpans": [
+            {
+              "text": "Usually ships within 1 business day after "
+            },
+            {
+              "text": "receipt of cleared payment.",
+              "action": {
+                "type": "NAV",
+                "URL": "http://pages.m.qa.ebay.com/help/buy/contextual/domestic-handling-time.html"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "COMMITTOBUY": {
+      "_type": "CommitToBuyViewModel",
+      "eligibleToCommitToBuy": false,
+      "showCommitToBuy": false,
+      "header": {
+        "textSpans": [
+          {
+            "text": "Buy It Now"
+          }
+        ]
+      },
+      "redirect": {
+        "url": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&srcAppId=3564&ru=https%3A%2F%2Fpay.qa.ebay.com%2Fxo%3Faction%3Dcreate%26rypsvc%3Dtrue%26pagename%3Dryp%26item%3D230007897316%26TransactionId%3D-1%26mbuy%3D1%26_trksid%3Dp2349624.m2548.l4627%26quantity%3D1",
+        "redirect": true
+      },
+      "fallBackUrl": {
+        "type": "NAV",
+        "URL": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&srcAppId=3564&gchru=https%3A%2F%2Fpay.qa.ebay.com%2Fgxo%3Faction%3Dcreate%26rypsvc%3Dtrue%26pagename%3Dryp%26varId%3D-1%26transactionid%3D-1%26item%3D230007897316%26qty%3D1%26gxo%3Dtrue&_trksid=p2349624.m3000.l8423&gch=1&ru=https%3A%2F%2Fpay.qa.ebay.com%2Fxo%3Faction%3Dcreate%26rypsvc%3Dtrue%26pagename%3Dryp%26item%3D230007897316%26TransactionId%3D-1%26mbuy%3D1%26_trksid%3Dp2349624.m2548.l4627%26quantity%3D1&gxo=true"
+      },
+      "thumbnail": {
+        "title": "Picture  of ",
+        "imageId": "Vj0AAOSwWapas9YX",
+        "imageIdType": "ZOOM_GUID",
+        "originalSize": {
+          "height": 64,
+          "width": 64
+        },
+        "URL": "https://i.qa.ebayimg.com/images/g/Vj0AAOSwWapas9YX/s-l64.png"
+      },
+      "shippingValue": {
+        "textSpans": [
+          {
+            "text": " + $3.00 Shipping"
+          }
+        ]
+      },
+      "title": {
+        "textSpans": [
+          {
+            "text": "Fixed Price immediate payment"
+          }
+        ]
+      }
+    },
+    "EBAYGUARANTEE": {
+      "_type": "GuaranteeViewModel",
+      "embg": {
+        "minView": {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Guarantee"
+              }
+            ]
+          },
+          "value": {
+            "primaryText": {
+              "textSpans": [
+                {
+                  "text": "eBay Money Back Guarantee"
+                }
+              ]
+            },
+            "secondaryText": {
+              "textSpans": [
+                {
+                  "text": "Get the item you ordered or your money back"
+                }
+              ]
+            }
+          }
+        },
+        "maxView": {
+          "header": {
+            "textSpans": [
+              {
+                "text": "Guarantee"
+              }
+            ]
+          },
+          "label": {
+            "textSpans": [
+              {
+                "text": "Guarantee"
+              }
+            ]
+          },
+          "value": {
+            "primaryText": {
+              "textSpans": [
+                {
+                  "text": "eBay Money Back Guarantee"
+                }
+              ]
+            },
+            "secondaryText": {
+              "textSpans": [
+                {
+                  "text": "Get the item you ordered or your money back"
+                }
+              ]
+            }
+          }
+        },
+        "infoLink": {
+          "type": "NAV",
+          "URL": "http://pages.m.qa.ebay.com/ebay-money-back-guarantee"
+        },
+        "infoLinkLabel": {
+          "textSpans": [
+            {
+              "text": "See Details"
+            }
+          ]
+        }
+      }
+    },
+    "BINSUMMARY": {
+      "_type": "BinViewModel",
+      "clientSideTracking": {
+        "BIN_CLIENT_CLICK": {
+          "eventFamily": "ITM",
+          "eventAction": "ACTN",
+          "actionKinds": [
+            "NAV"
+          ],
+          "operationId": "2349624",
+          "flushImmediately": false,
+          "eventProperty": {
+            "sid": "p2349624.m2548.l8490"
+          }
+        }
+      },
+      "minView": {
+        "price": {
+          "displayPrice": {
+            "textSpans": [
+              {
+                "text": "$299.00"
+              }
+            ]
+          },
+          "shippingCost": {
+            "textSpans": [
+              {
+                "text": " + $3.00 Shipping"
+              }
+            ]
+          }
+        },
+        "actions": [
+          {
+            "text": "Buy It Now",
+            "type": "PRIMARY",
+            "action": {
+              "type": "NAV",
+              "name": "BUY_IT_NOW",
+              "tracking": {
+                "eventFamily": "ITM",
+                "eventAction": "ACTN",
+                "actionKinds": [
+                  "NAV"
+                ],
+                "operationId": "2349624",
+                "flushImmediately": false,
+                "eventProperty": {
+                  "sid": "p2349624.m2548.l4627"
+                }
+              },
+              "URL": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&srcAppId=3564&gchru=https%3A%2F%2Fpay.qa.ebay.com%2Fgxo%3Faction%3Dcreate%26rypsvc%3Dtrue%26pagename%3Dryp%26transactionid%3D-1%26item%3D230007897316%26qty%3D1%26gxo%3Dtrue&_trksid=p2349624.m3000.l8423&gch=1&ru=https%3A%2F%2Fpay.qa.ebay.com%2Fxo%3Faction%3Dcreate%26rypsvc%3Dtrue%26pagename%3Dryp%26item%3D230007897316%26TransactionId%3D-1%26mbuy%3D1%26_trksid%3Dp2349624.m2548.l4627%26quantity%3D1%26var%3D&gxo=true"
+            },
+            "value": {
+              "formValue": {
+                "params": {
+                  "quantity": "1"
+                },
+                "method": "GET"
+              },
+              "eligibleToCommitToBuy": false,
+              "showCommitToBuy": false,
+              "cartState": false
+            }
+          },
+          {
+            "text": "Add to cart",
+            "type": "SECONDARY",
+            "action": {
+              "type": "OPERATION",
+              "name": "cartAction",
+              "tracking": {
+                "eventFamily": "ITM",
+                "eventAction": "ACTN",
+                "actionKinds": [
+                  "NAV"
+                ],
+                "operationId": "2349624",
+                "flushImmediately": false,
+                "eventProperty": {
+                  "sid": "p2349624.m2548.l5001"
+                }
+              },
+              "URL": "/addToCart?itemId=230007897316"
+            },
+            "value": {
+              "eligibleToCommitToBuy": false,
+              "showCommitToBuy": false,
+              "cartState": false,
+              "eligibleForGuestCart": true,
+              "cartSigninUrl": {
+                "URL": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&ru=https%3A%2F%2Fwww.m.qa.ebay.com%2Fitm%2FFixed-Price-immediate-payment%2F230007897316%3FvarId%3D%26addtocart%3D1%26qty%3D1"
+              },
+              "errors": {
+                "BUYER_BLOCKED_SELLER_EXCLUDED_SHIP_TO_LOCATION": "Buyer blocked due to excluded ship to locations.",
+                "VARIATION_NOT_FOUND": "This item is not available in the variation you've selected.",
+                "DEFAULT_ERROR": "Failed to perform the action"
+              }
+            }
+          },
+          {
+            "text": "View In Cart",
+            "type": "SECONDARY",
+            "action": {
+              "type": "NAV",
+              "name": "viewInCartAction",
+              "tracking": {
+                "eventFamily": "ITM",
+                "eventAction": "ACTN",
+                "actionKinds": [
+                  "NAV"
+                ],
+                "operationId": "2349624",
+                "flushImmediately": false,
+                "eventProperty": {
+                  "sid": "p2349624.m2548.l6259"
+                }
+              },
+              "URL": "/itm/sc/add?ssPageName=CART:ATC&item=iid:230007897316"
+            },
+            "value": {
+              "eligibleToCommitToBuy": false,
+              "showCommitToBuy": false,
+              "cartState": false,
+              "eligibleForGuestCart": true,
+              "cartSigninUrl": {
+                "URL": "https://signin.qa.ebay.com/ws/eBayISAPI.dll?SignIn&ru=https%3A%2F%2Fwww.m.qa.ebay.com%2Fitm%2FFixed-Price-immediate-payment%2F230007897316%3FvarId%3D%26addtocart%3D1%26qty%3D1"
+              },
+              "errors": {
+                "BUYER_BLOCKED_SELLER_EXCLUDED_SHIP_TO_LOCATION": "Buyer blocked due to excluded ship to locations.",
+                "VARIATION_NOT_FOUND": "This item is not available in the variation you've selected.",
+                "DEFAULT_ERROR": "Failed to perform the action"
+              }
+            }
+          }
+        ],
+        "eligibleToCommitToBuy": false,
+        "showCommitToBuy": false,
+        "cartState": false
+      }
+    },
+    "OTHER_ACTIONS": {
+      "_type": "OtherActionsViewModel",
+      "title": "Fixed Price immediate payment",
+      "soltAction": {
+        "text": "Sell One Like This",
+        "action": {
+          "type": "NAV",
+          "tracking": {
+            "eventFamily": "ITM",
+            "eventAction": "ACTN",
+            "actionKinds": [
+              "NAV"
+            ],
+            "operationId": "2349624",
+            "flushImmediately": false,
+            "eventProperty": {
+              "sid": "p2349624.m2548.l6455"
+            }
+          },
+          "URL": "http://www.cse1.stratus.qa.ebay.com/cse/list.jsf?mode=selllike&usecase=create&item=230007897316"
+        },
+        "value": {
+          "itemId": "230007897316"
+        }
+      },
+      "shareAction": {
+        "text": "Share",
+        "type": "SECONDARY",
+        "action": {
+          "type": "NAV",
+          "tracking": {
+            "eventFamily": "ITM",
+            "eventAction": "ACTN",
+            "actionKinds": [
+              "NAV"
+            ],
+            "operationId": "2349624",
+            "flushImmediately": false,
+            "eventProperty": {
+              "sid": "p2349624.m2548.l6249"
+            }
+          },
+          "URL": "https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316?_trksid=p2349624.l4275"
+        },
+        "value": {
+          "title": "Fixed Price immediate payment",
+          "language": "en-US",
+          "spid": "2349624",
+          "imageURL": "https://i.qa.ebayimg.com/images/g/Vj0AAOSwWapas9YX/s-l64.png",
+          "url": "https://www.m.qa.ebay.com/itm/Fixed-Price-immediate-payment-/230007897316"
+        }
+      },
+      "reportItemAction": {
+        "text": "Report item",
+        "type": "SECONDARY",
+        "action": {
+          "type": "NAV",
+          "trackingList": [
+            {
+              "eventFamily": "ITM",
+              "eventAction": "ACTN",
+              "actionKinds": [
+                "NAV"
+              ],
+              "operationId": "2349624",
+              "flushImmediately": false,
+              "eventProperty": {
+                "sid": "p2349624.m2548.l2566"
+              }
+            }
+          ],
+          "URL": "http://cgi1.qa.ebay.com/ws/eBayISAPI.dll?ReportThisItemRedirect&active=1&rt=nc&_trksid=p2349624.l2566&itemid=230007897316&seller=grafpdx801"
+        }
+      },
+      "surveyAction": {
+        "text": "Tell us what you think",
+        "type": "SECONDARY",
+        "action": {
+          "type": "NAV",
+          "URL": "https://connect.ebay.com/srv/survey/a/pic.vi7"
+        }
+      }
+    },
+    "RETURNS": {
+      "_type": "ReturnsViewModel",
+      "minView": [
+        {
+          "label": {
+            "textSpans": [
+              {
+                "text": "Returns"
+              }
+            ]
+          },
+          "value": [
+            {
+              "textSpans": [
+                {
+                  "text": "Accepted within "
+                },
+                {
+                  "text": "14"
+                },
+                {
+                  "text": " days"
+                }
+              ]
+            },
+            {
+              "textSpans": [
+                {
+                  "text": "Buyer pays return shipping"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "maxView": {
+        "value": [
+          {
+            "label": {
+              "textSpans": [
+                {
+                  "text": "(408)505-4239"
+                }
+              ]
+            },
+            "value": [
+              {
+                "textSpans": [
+                  {
+                    "text": "After receiving the item, contact seller within "
+                  },
+                  {
+                    "text": "14"
+                  },
+                  {
+                    "text": " days."
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": {
+              "textSpans": [
+                {
+                  "text": "250 Timber Creek Dr"
+                }
+              ]
+            },
+            "value": [
+              {
+                "textSpans": [
+                  {
+                    "text": "Money Back"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": {
+              "textSpans": [
+                {
+                  "text": "Have a nice day"
+                }
+              ]
+            },
+            "value": [
+              {
+                "textSpans": [
+                  {
+                    "text": "Buyer pays return shipping"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": {
+              "textSpans": [
+                {
+                  "text": "Item condition policy"
+                }
+              ]
+            },
+            "value": [
+              {
+                "textSpans": [
+                  {
+                    "text": "Learn more",
+                    "action": {
+                      "type": "NAV",
+                      "URL": "http://pages.m.qa.ebay.com/help/policies/return-item-condition.html"
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "label": {
+              "textSpans": [
+                {
+                  "text": "Return policy"
+                }
+              ]
+            },
+            "value": [
+              {
+                "textSpans": [
+                  {
+                    "text": "test return policy description"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "header": {
+          "textSpans": [
+            {
+              "text": "Returns"
+            }
+          ]
+        }
+      }
+    },
+    "ITEMLOCATION": {
+      "_type": "ItemLocationViewModel",
+      "label": {
+        "textSpans": [
+          {
+            "text": "Ships from"
+          }
+        ]
+      },
+      "value": [
+        {
+          "textSpans": [
+            {
+              "text": "San Jose, CA"
+            }
+          ]
+        }
+      ]
+    },
+    "TITLE": {
+      "_type": "TitleViewModel",
+      "meta": {
+        "trackingList": [
+          {
+            "eventFamily": "ITM",
+            "eventAction": "EXPC",
+            "operationId": "2349624",
+            "flushImmediately": false,
+            "eventProperty": {
+              "sid": "p2349624.m2570"
+            }
+          }
+        ]
+      },
+      "mainTitle": {
+        "textSpans": [
+          {
+            "text": "Fixed Price immediate payment"
+          }
+        ]
+      }
+    }
+  }
+}

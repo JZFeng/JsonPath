@@ -19,6 +19,12 @@
             <artifactId>guava</artifactId>
             <version>23.5-jre</version>
         </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.8</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

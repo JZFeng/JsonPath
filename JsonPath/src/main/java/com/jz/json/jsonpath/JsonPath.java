@@ -49,7 +49,6 @@ public class JsonPath {
                 ,"RETURNS.maxView.value[-2]"
         };
 
-//        String[] paths = new String[]{"URL"};
         String[] ignoredPaths = new String[]{
                 "PICTURE.mediaList[0].image.originalImg.URL",  //3
                 "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
@@ -58,6 +57,7 @@ public class JsonPath {
                 ,"$.modules.WATCH.watching.watchAction.action.URL" // 1
                 ,"$.modules.WATCH.watch.watchAction.action.URL"  // 1
                 ,"BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
+//                total = 11;
         };
 
         for (String path : paths) {
@@ -74,7 +74,13 @@ public class JsonPath {
     public static List<JsonElementWithLevel> get(
             String source, String path) throws Exception {
         List<JsonElementWithLevel> res = new ArrayList<>();
-        return get(source, path, false);
+        return get(source, path, false, new String[]{});
+    }
+
+    public static List<JsonElementWithLevel> get(
+            String source, String path, String[] ignoredPaths) throws Exception {
+        List<JsonElementWithLevel> res = new ArrayList<>();
+        return get(source, path, false, ignoredPaths);
     }
 
     /**
@@ -85,7 +91,7 @@ public class JsonPath {
      * @author jzfeng
      */
     public static List<JsonElementWithLevel> get(
-            String source, String path, boolean ignoreCase) throws Exception {
+            String source, String path, boolean ignoreCase, String[] ignoredPaths) throws Exception {
         List<JsonElementWithLevel> res = new ArrayList<>();
         if (source == null || source.length() == 0 || path == null || path.length() == 0) {
             return res;
@@ -93,7 +99,7 @@ public class JsonPath {
 
         JsonParser parser = new JsonParser();
         JsonObject src = parser.parse(source).getAsJsonObject();
-        res = get(src, path, ignoreCase, new String[]{});
+        res = get(src, path, ignoreCase, ignoredPaths);
 
         return res;
     }
@@ -110,6 +116,10 @@ public class JsonPath {
         return get(source, path, false, new String[]{});
     }
 
+
+    public static List<JsonElementWithLevel> get(JsonObject source, String path, String[] ignoredPaths) throws Exception {
+        return get(source, path, false, ignoredPaths);
+    }
 
     /**
      * @param source     the source of JsonObject
