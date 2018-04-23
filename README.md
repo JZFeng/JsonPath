@@ -7,7 +7,8 @@ public static List<JsonElementWithLevel> get(
 * It supports standard JsonPath. 
 * It supports partial JsonPath, for example, if user enters "URL", it gets all the JsonElements that has "URL" as the key;
 * It supports ignoring case, for example, if user enters "URL", it gets all the JsonElements that has "URL" / "url" / "Url" as the key;
-* It supports ignoring some JsonPaths by passing JsonPath array
+* It supports ignoring some JsonPaths by passing JsonPath array;
+
             String[] ignoredPaths = new String[]{
                             "PICTURE.mediaList[0].image.originalImg.URL", 
                             "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
