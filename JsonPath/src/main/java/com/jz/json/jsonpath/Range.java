@@ -11,7 +11,6 @@ import java.util.*;
 
 //  x >= start && x <= end
 public class Range implements Filter {
-    private static final int LARGEST_PRIME_NUMBER = 2147483629;
     private int start;
     private int end;
 
@@ -100,49 +99,13 @@ public class Range implements Filter {
         return result;
     }
 
-
-
-    private static boolean isPrime(int n) {
-        if (n < 2) {
-            return false;
-        }
-        if (n == 2) {
-            return true;
-        }
-        if (n % 2 == 0) {
-            return false;
-        }
-
-        for (int i = 3; i * i <= n; i = i + 2) {
-            if (n % i == 0) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private static int nextPrime(int n) {
-        if(n % 2 == 0) {
-            n = n - 1;
-        }
-        while(!isPrime(n)) {
-            n = n - 2;
-        }
-
-        return n;
-    }
-
-
-    @Override
     public String toString() {
         return "Start : " + start + " , end :" + end;
     }
 
     @Override
     public int hashCode() {
-        long hashcode = (long)String.valueOf(start).hashCode() * (long)(String.valueOf(end).hashCode());
-        return (int)(hashcode % (long)LARGEST_PRIME_NUMBER);
+        return String.valueOf(start).hashCode() * (String.valueOf(end).hashCode());
     }
 
     @Override

@@ -1,10 +1,8 @@
 package com.jz.json.jsonpath;
 
 import com.google.gson.*;
-
 import java.io.File;
 import java.util.*;
-
 import static com.jz.json.jsonpath.Range.getRange;
 import static com.jz.json.jsonpath.Range.mergeRanges;
 import static com.jz.json.jsonpath.Utils.getKeys;
@@ -35,8 +33,8 @@ public class JsonPath {
         JsonObject source = parser.parse(json).getAsJsonObject();
 
         String[] paths = new String[]{
-                "$.modules.BINSUMMARY.minView.actions[0]"
-                , "modules.SELLERPRESENCE.sellerName.action.URL"
+                "$.modules.BINSUMMARY.minView.actions[0]",
+                "SELLERPRESENCE.sellerName.action.URL"
                 , "RETURNS.maxView.value.length()"
                 , "RETURNS.maxView.value[0:].label"
                 , "RETURNS.maxView.value[*].label.textSpans[0]"
@@ -54,11 +52,12 @@ public class JsonPath {
                 "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
                 , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
                 , "BINSUMMARY.minView.actions[1].action.URL" // 2
-                , "$.modules.WATCH.watching.watchAction.action.URL" // 1
-                , "$.modules.WATCH.watch.watchAction.action.URL"  // 1
+                , "WATCH.watching.watchAction.action.URL" // 1
+                , "WATCH.watch.watchAction.action.URL"  // 1
                 , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
 //                total = 11;
         };
+
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
@@ -136,26 +135,12 @@ public class JsonPath {
             return result;
         }
 
+        String regex = generateRegex(path, ignoreCase);
         Map<String, List<Filter>> filters = getFilters(path, ignoreCase); // generate filters from path;
-        Map<String, List<Filter>> ignoredFilters = getFilters(ignoredPaths, ignoreCase);
-        Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
-
-        String regex = null;
-        regex = generateRegex(path, ignoreCase);
-
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
+        Map<String, List<Filter>> ignoredFilters = getFilters(ignoredPaths, ignoreCase);
         Map<String, List<Filter>> ignoredMatchedFilters = new LinkedHashMap<>();
-
-        Set<String> set = new HashSet<>();
-        for (String ignoredPath : ignoredPaths) {
-            if (ignoredPath.indexOf('[') == -1) {
-                if (ignoreCase) {
-                    ignoredPath = ignoredPath.toLowerCase();
-                }
-                set.add(ignoredPath);
-            }
-        }
-
+        Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
         boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
         boolean isFinished = false;
 
@@ -167,10 +152,8 @@ public class JsonPath {
             return result;
         }
 
-
         Queue<JsonElementWithLevel> queue = new LinkedList<JsonElementWithLevel>();
         queue.offer(new JsonElementWithLevel(source, "$"));
-
         while (!queue.isEmpty()) {
             int size = queue.size();
             //Traverse by level
@@ -195,7 +178,7 @@ public class JsonPath {
                         updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                         if (level.matches(regex)) {
                             isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length) && !set.contains(level)) {
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length)) {
                                 result.add(tmp);
                             }
                         }
@@ -214,7 +197,7 @@ public class JsonPath {
                         updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                         if (level.matches(regex)) {
                             isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length) && !set.contains(level)) {
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length)) {
                                 result.add(tmp);
                             }
                         }
@@ -229,6 +212,51 @@ public class JsonPath {
             }
 
         }
+
+        return applyUniqueIgnoredPaths(result, ignoreCase, ignoredPaths);
+    }
+
+    /**
+     * Very expensive if you do not enter full JsonPath, N square time complexibility;
+     * @param result
+     * @param ignoreCase
+     * @param ignoredPaths
+     * @return
+     */
+    private static List<JsonElementWithLevel> applyUniqueIgnoredPaths(List<JsonElementWithLevel> result, boolean ignoreCase, String[] ignoredPaths) {
+        if(ignoredPaths == null || ignoredPaths.length == 0) {
+            return result;
+        }
+
+        Set<String> set  = new HashSet<>();
+        for (String ignoredPath : ignoredPaths) {
+            if (ignoredPath.indexOf('[') == -1) {
+                if (ignoreCase) {
+                    ignoredPath = ignoredPath.toLowerCase();
+                }
+                set.add(ignoredPath);
+            }
+        }
+        List<String> regexs = new ArrayList<>();
+        for(String str : set) {
+            regexs.add(generateRegex(str, ignoreCase));
+        }
+
+        Iterator<JsonElementWithLevel> itr = result.iterator();
+        while(itr.hasNext()) {
+            JsonElementWithLevel je = itr.next();
+            String level = je.getLevel();
+            if(ignoreCase) {
+                level = level.toLowerCase();
+            }
+            for(String regex : regexs) {
+                if(level.matches(regex)) {
+                    itr.remove();
+                    break;
+                }
+            }
+        }
+
 
         return result;
     }
@@ -247,10 +275,10 @@ public class JsonPath {
                                             ) throws Exception {
 
         if (matchedFilters == null || matchedFilters.size() == 0) {
-                return true;
+            return true;
         }
         if (currentLevel.indexOf('[') == -1) {
-                return true;
+            return true;
         }
 
         StringBuilder prefix = new StringBuilder();
@@ -265,7 +293,7 @@ public class JsonPath {
             filters = matchedFilters.get(prefix.toString().trim());
 
             if (filters == null || filters.size() == 0) {
-                    return true;
+                return true;
             }
 
             boolean isMatched = false;
@@ -299,14 +327,14 @@ public class JsonPath {
             Map<String, List<Filter>> matchedFilters,
             int length
 
-                                            ) throws Exception {
+                                                   ) throws Exception {
 
         if (matchedFilters == null || matchedFilters.size() == 0) {
-                return false;
+            return false;
 
         }
         if (currentLevel.indexOf('[') == -1) {
-                return false;
+            return false;
         }
 
         StringBuilder prefix = new StringBuilder();
@@ -322,7 +350,7 @@ public class JsonPath {
 
             if (filters == null || filters.size() == 0) {
 
-                    return false;
+                return false;
 
             }
 
@@ -415,7 +443,6 @@ public class JsonPath {
      * @return
      */
     private static boolean isMatchingConditions(JsonObject jo, List<Condition> conditions) throws Exception {
-
         boolean result = isMatchingCondition(jo, conditions.get(0));
 
         for (int i = 1; i < conditions.size(); i++) {
@@ -581,7 +608,8 @@ public class JsonPath {
     }
 
     /**
-     * In most cases, you will not need multiple JsonPaths. However in case you have one scenario, it does support.
+     * In most cases, you will not need ignore multiple JsonPaths. However in case you have one scenario,
+     * it does support.
      * But keep in mind:
      * 1 For same JsonPath, both has List<Condition> and List<Range>, it chooses List<Condition>;
      * 2 For same JsonPath, if it has multiple List<Condition>, it chooses the last one;
@@ -647,7 +675,6 @@ public class JsonPath {
     }
 
 
-    // if same JsonPath, both has List<Condition> and List<Range>, choose List<Condition>;
     private static Map<String, List<Filter>> mergeTwoMaps(
             Map<String, List<Filter>> conditionMap, Map<String, List<Filter>> rangeMap) {
         Map<String, List<Filter>> res = new LinkedHashMap<>();
