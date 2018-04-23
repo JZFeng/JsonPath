@@ -1,10 +1,38 @@
+public static List<JsonElementWithLevel> get(
+            JsonObject source, 
+            String path, 
+            boolean ignoreCase, 
+            String[] ignoredPaths) 
+    
+* It supports standard JsonPath. 
+* It supports partial JsonPath, for example, if user enters "URL", it gets all the JsonElements that has "URL" as the key;
+* It supports ignoring case, for example, if user enters "URL", it gets all the JsonElements that has "URL" / "url" / "Url" as the key;
+* It supports ignoring some JsonPaths by passing JsonPath array
+
 # Here are some sample JsonPaths
-  	 "RETURNS.maxView.value[0:].label",
-  	 "RETURNS.maxView.value[].label.textSpans[0]",
-  	 "RETURNS.maxView.value[1,3,4].label.textSpans[0].text",
-  	 "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text",
-  	 "RETURNS.maxView.value[].label.textSpans[?(@.text =~ \"(.)\\d{3,}(.)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"};
+                "$.modules.BINSUMMARY.minView.actions[0]"
+                "SELLERPRESENCE.sellerName.action.URL"
+                "RETURNS.maxView.value.length()"
+                "RETURNS.maxView.value[0:].label"
+                "RETURNS.maxView.value[*].label.textSpans[0]"
+                "RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
+                "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text"
+                "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
+                "URL"
+                "RETURNS.maxView.value[1:3]"
+                "RETURNS.maxView.value[-3:-1]"
+                "RETURNS.maxView.value[-2]"
  
+String[] ignoredPaths = new String[]{
+                "PICTURE.mediaList[0].image.originalImg.URL",  //3
+                "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
+                , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
+                , "BINSUMMARY.minView.actions[1].action.URL" // 2
+                , "$.WATCH.watching.watchAction.action.URL" // 1
+                , "$.modules.WATCH.watch.watchAction.action.URL"  // 1
+                , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
+        }; 
+
 
 JsonPath expressions always refer to a JSON structure in the same way as XPath expression are used in combination 
 with an XML document. The "root member object" in JsonPath is always referred to as `$` regardless if it is an 
