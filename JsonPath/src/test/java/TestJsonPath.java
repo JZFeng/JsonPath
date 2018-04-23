@@ -46,11 +46,11 @@ public class TestJsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("./src/test/java/testdata.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
-        int[] expectedSize = {1,1,1,5,5,3,1,4,23,2,2,1};
+        int[] expectedSize = {1, 1, 1, 5, 5, 3, 1, 4, 23, 2, 2, 1};
 
         for (int i = 0; i < paths.length; i++) {
             List<JsonElementWithLevel> res = JsonPath.get(source, paths[i]);
-            System.out.println("***SIZE: " +res.size() +  ";" + paths[i] + ";\r\n" + res );
+            System.out.println("***SIZE: " + res.size() + ";" + paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
     }
@@ -62,11 +62,11 @@ public class TestJsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("./src/test/java/testdata.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
-        int[] expectedSize = {1,1,1,5,5,3,1,4,26,2,2,1};
+        int[] expectedSize = {1, 1, 1, 5, 5, 3, 1, 4, 26, 2, 2, 1};
 
         for (int i = 0; i < paths.length; i++) {
             List<JsonElementWithLevel> res = get(source, paths[i], true, new String[]{});
-            System.out.println("***SIZE: " +res.size() +  ";" + paths[i] + ";\r\n" + res );
+            System.out.println("***SIZE: " + res.size() + ";" + paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
     }
@@ -77,11 +77,11 @@ public class TestJsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("./src/test/java/testdata.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
-        int[] expectedSize = {1,1,1,4,4,2,1,4,13,2,1,0};
+        int[] expectedSize = {1, 1, 1, 4, 4, 2, 1, 4, 13, 2, 1, 0};
 
         for (int i = 0; i < paths.length; i++) {
             List<JsonElementWithLevel> res = get(source, paths[i], false, ignoredPaths);
-            System.out.println("***SIZE: " +res.size() +  ";" + paths[i] + ";\r\n" + res );
+            System.out.println("***SIZE: " + res.size() + ";" + paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
     }
@@ -92,11 +92,11 @@ public class TestJsonPath {
         String json = Utils.convertFormattedJson2Raw(new File("./src/test/java/testdata.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
-        int[] expectedSize = {1,1,1,4,4,2,1,4,15,2,1,0};
+        int[] expectedSize = {1, 1, 1, 4, 4, 2, 1, 4, 15, 2, 1, 0};
 
         for (int i = 0; i < paths.length; i++) {
             List<JsonElementWithLevel> res = get(source, paths[i], true, ignoredPaths);
-            System.out.println("***SIZE: " +res.size() +  ";" + paths[i] + ";\r\n" + res );
+            System.out.println("***SIZE: " + res.size() + ";" + paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
     }

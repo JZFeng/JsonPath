@@ -36,27 +36,27 @@ public class JsonPath {
 
         String[] paths = new String[]{
                 "$.modules.BINSUMMARY.minView.actions[0]"
-                ,"modules.SELLERPRESENCE.sellerName.action.URL"
-                ,"RETURNS.maxView.value.length()"
-                ,"RETURNS.maxView.value[0:].label"
-                ,"RETURNS.maxView.value[*].label.textSpans[0]"
-                ,"RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
-                ,"RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text"
-                ,"RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
-                ,"URL"
-                ,"RETURNS.maxView.value[1:3]"
-                ,"RETURNS.maxView.value[-3:-1]"
-                ,"RETURNS.maxView.value[-2]"
+                , "modules.SELLERPRESENCE.sellerName.action.URL"
+                , "RETURNS.maxView.value.length()"
+                , "RETURNS.maxView.value[0:].label"
+                , "RETURNS.maxView.value[*].label.textSpans[0]"
+                , "RETURNS.maxView.value[1,3,4].label.textSpans[0].text"
+                , "RETURNS.maxView.value[1,3,4].label.textSpans[?(@.text == \"Refund\" || @.text == \"Return policy\")].text"
+                , "RETURNS.maxView.value[*].label.textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
+                , "URL"
+                , "RETURNS.maxView.value[1:3]"
+                , "RETURNS.maxView.value[-3:-1]"
+                , "RETURNS.maxView.value[-2]"
         };
 
         String[] ignoredPaths = new String[]{
                 "PICTURE.mediaList[0].image.originalImg.URL",  //3
                 "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
-                ,"THIRD_PARTY_RESOURCES.js[0].url"  // 1
-                ,"BINSUMMARY.minView.actions[1].action.URL" // 2
-                ,"$.modules.WATCH.watching.watchAction.action.URL" // 1
-                ,"$.modules.WATCH.watch.watchAction.action.URL"  // 1
-                ,"BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
+                , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
+                , "BINSUMMARY.minView.actions[1].action.URL" // 2
+                , "$.modules.WATCH.watching.watchAction.action.URL" // 1
+                , "$.modules.WATCH.watch.watchAction.action.URL"  // 1
+                , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
 //                total = 11;
         };
 
@@ -117,7 +117,8 @@ public class JsonPath {
     }
 
 
-    public static List<JsonElementWithLevel> get(JsonObject source, String path, String[] ignoredPaths) throws Exception {
+    public static List<JsonElementWithLevel> get(
+            JsonObject source, String path, String[] ignoredPaths) throws Exception {
         return get(source, path, false, ignoredPaths);
     }
 
@@ -140,11 +141,7 @@ public class JsonPath {
         Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
 
         String regex = null;
-        if (ignoreCase) {
-            regex = generateRegex(path.toLowerCase());
-        } else {
-            regex = generateRegex(path);
-        }
+        regex = generateRegex(path, ignoreCase);
 
         Map<String, List<Filter>> matchedFilters = new LinkedHashMap<>(); //filters with absolute path;
         Map<String, List<Filter>> ignoredMatchedFilters = new LinkedHashMap<>();
@@ -152,6 +149,9 @@ public class JsonPath {
         Set<String> set = new HashSet<>();
         for (String ignoredPath : ignoredPaths) {
             if (ignoredPath.indexOf('[') == -1) {
+                if (ignoreCase) {
+                    ignoredPath = ignoredPath.toLowerCase();
+                }
                 set.add(ignoredPath);
             }
         }
@@ -182,29 +182,21 @@ public class JsonPath {
 
                 if (je.isJsonArray()) {
                     JsonArray ja = je.getAsJsonArray();
-                    cachedJsonArrays.put(currentLevel, ja);
+                    cachedJsonArrays.put(ignoreCase ? currentLevel.toLowerCase() : currentLevel, ja);
                     int length = ja.size();
                     for (int j = 0; j < ja.size(); j++) {
                         String level = currentLevel + "[" + j + "]";
                         JsonElementWithLevel tmp = new JsonElementWithLevel(ja.get(j), level);
                         queue.offer(tmp);
                         if (ignoreCase) {
-                            updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
-                            updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
-                            if (level.toLowerCase().matches(regex)) {
-                                isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase, true) && !set.contains(level)) {
-                                    result.add(tmp);
-                                }
-                            }
-                        } else {
-                            updateMatchedFilters(level, filters, matchedFilters);
-                            updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
-                            if (level.matches(regex)) {
-                                isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase , false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase , true) && !set.contains(level)) {
-                                    result.add(tmp);
-                                }
+                            level = level.toLowerCase();
+                        }
+                        updateMatchedFilters(level, filters, matchedFilters);
+                        updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
+                        if (level.matches(regex)) {
+                            isFinished = true;
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, true) && !set.contains(level)) {
+                                result.add(tmp);
                             }
                         }
                     }
@@ -216,22 +208,14 @@ public class JsonPath {
                         JsonElementWithLevel tmp = new JsonElementWithLevel(entry.getValue(), level);
                         queue.offer(tmp);
                         if (ignoreCase) {
-                            updateMatchedFilters(level.toLowerCase(), filters, matchedFilters);
-                            updateMatchedFilters(level.toLowerCase(), ignoredFilters, ignoredMatchedFilters);
-                            if (level.toLowerCase().matches(regex)) {
-                                isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase, true) && !set.contains(level)) {
-                                    result.add(tmp);
-                                }
-                            }
-                        } else {
-                            updateMatchedFilters(level, filters, matchedFilters);
-                            updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
-                            if (level.matches(regex)) {
-                                isFinished = true;
-                                if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, ignoreCase,false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, ignoreCase,true) && !set.contains(level)) {
-                                    result.add(tmp);
-                                }
+                            level = level.toLowerCase();
+                        }
+                        updateMatchedFilters(level, filters, matchedFilters);
+                        updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
+                        if (level.matches(regex)) {
+                            isFinished = true;
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, true) && !set.contains(level)) {
+                                result.add(tmp);
                             }
                         }
                     }
@@ -249,54 +233,6 @@ public class JsonPath {
         return result;
     }
 
-    /*private static List<JsonElementWithLevel> applyIgnoredPathsWithoutFilters(List<JsonElementWithLevel> result, String[] ignoredPaths ) {
-        Set<String> set = new HashSet<>();
-        for (String path : ignoredPaths) {
-            if (path.indexOf('[') == -1) {
-                set.add(path);
-            }
-        }
-
-        Iterator<JsonElementWithLevel> iterator = result.iterator();
-        while (iterator.hasNext()) {
-            JsonElementWithLevel je = iterator.next();
-            String currentLevel = je.getLevel();
-            if(set.contains(currentLevel)) {
-                iterator.remove();
-            }
-        }
-
-        return result;
-    }
-
-    private static List<JsonElementWithLevel> applyIgnoredPathsWithFilters(
-            List<JsonElementWithLevel> result,
-            Map<String, JsonArray> cachedJsonArrays, Map<String, List<Filter>> ignoredMatchedFilters,
-            boolean ignoreCase
-                                                                          ) throws Exception {
-        Iterator<JsonElementWithLevel> iterator = result.iterator();
-        while (iterator.hasNext()) {
-            JsonElementWithLevel je = iterator.next();
-            String currentLevel = je.getLevel();
-            if (currentLevel.indexOf('[') == -1) {
-                continue;
-            }
-
-            String jaPath = currentLevel.substring(0, currentLevel.lastIndexOf('['));
-            JsonArray ja = cachedJsonArrays.get(jaPath).getAsJsonArray();
-            if (ja == null) {
-                continue;
-            }
-
-            if (isMatchingFilters(cachedJsonArrays, currentLevel.substring(0, currentLevel.lastIndexOf("]") + 1), ignoredMatchedFilters, ja.size(), ignoreCase, true)) {
-                iterator.remove();
-            }
-        }
-
-        return result;
-    }*/
-
-
     /**
      * @param currentLevel   $.courses[i].grade
      * @param matchedFilters
@@ -307,19 +243,18 @@ public class JsonPath {
             String currentLevel,
             Map<String, List<Filter>> matchedFilters,
             int length,
-            boolean ignoreCase,
             boolean ignoringMode
                                             ) throws Exception {
 
         if (matchedFilters == null || matchedFilters.size() == 0) {
-            if(ignoringMode) {
+            if (ignoringMode) {
                 return false;
             } else {
                 return true;
             }
         }
         if (currentLevel.indexOf('[') == -1) {
-            if(ignoringMode) {
+            if (ignoringMode) {
                 return false;
             } else {
                 return true;
@@ -334,14 +269,11 @@ public class JsonPath {
             prefix.append(currentLevel.substring(0, index) + "[]");
             int i = Integer.parseInt(currentLevel.substring(index + 1, currentLevel.indexOf(']')));
             List<Filter> filters = null;
-            if (ignoreCase) {
-                filters = matchedFilters.get(prefix.toString().trim().toLowerCase());
-            } else {
-                filters = matchedFilters.get(prefix.toString().trim());
-            }
+
+            filters = matchedFilters.get(prefix.toString().trim());
 
             if (filters == null || filters.size() == 0) {
-                if(ignoringMode) {
+                if (ignoringMode) {
                     return false;
                 } else {
                     return true;
@@ -362,7 +294,7 @@ public class JsonPath {
             }
 
             if (isMatched) {
-                if(ignoringMode) {
+                if (ignoringMode) {
                     return true;
                 }
                 currentLevel = currentLevel.substring(currentLevel.indexOf(']') + 1);
@@ -543,7 +475,11 @@ public class JsonPath {
     }
 
 
-    private static String generateRegex(String path) {
+    private static String generateRegex(String path, boolean ignoreCase) {
+        if (ignoreCase) {
+            path = path.toLowerCase();
+        }
+
         if (path.startsWith("$")) {
             path = path.substring(2);
         }
