@@ -195,7 +195,7 @@ public class JsonPath {
                         updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                         if (level.matches(regex)) {
                             isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, true) && !set.contains(level)) {
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length) && !set.contains(level)) {
                                 result.add(tmp);
                             }
                         }
@@ -214,7 +214,7 @@ public class JsonPath {
                         updateMatchedFilters(level, ignoredFilters, ignoredMatchedFilters);
                         if (level.matches(regex)) {
                             isFinished = true;
-                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length, false) && !isMatchingFilters(cachedJsonArrays, level, ignoredMatchedFilters, length, true) && !set.contains(level)) {
+                            if (isMatchingFilters(cachedJsonArrays, level, matchedFilters, length) && !isMatchingIgnoredFilters(cachedJsonArrays, level, ignoredMatchedFilters, length) && !set.contains(level)) {
                                 result.add(tmp);
                             }
                         }
@@ -242,23 +242,15 @@ public class JsonPath {
             Map<String, JsonArray> cachedJsonArrays,
             String currentLevel,
             Map<String, List<Filter>> matchedFilters,
-            int length,
-            boolean ignoringMode
+            int length
+
                                             ) throws Exception {
 
         if (matchedFilters == null || matchedFilters.size() == 0) {
-            if (ignoringMode) {
-                return false;
-            } else {
                 return true;
-            }
         }
         if (currentLevel.indexOf('[') == -1) {
-            if (ignoringMode) {
-                return false;
-            } else {
                 return true;
-            }
         }
 
         StringBuilder prefix = new StringBuilder();
@@ -273,11 +265,7 @@ public class JsonPath {
             filters = matchedFilters.get(prefix.toString().trim());
 
             if (filters == null || filters.size() == 0) {
-                if (ignoringMode) {
-                    return false;
-                } else {
                     return true;
-                }
             }
 
             boolean isMatched = false;
@@ -294,9 +282,6 @@ public class JsonPath {
             }
 
             if (isMatched) {
-                if (ignoringMode) {
-                    return true;
-                }
                 currentLevel = currentLevel.substring(currentLevel.indexOf(']') + 1);
             } else {
                 return false;
@@ -305,6 +290,64 @@ public class JsonPath {
         }
 
         return true;
+    }
+
+
+    private static boolean isMatchingIgnoredFilters(
+            Map<String, JsonArray> cachedJsonArrays,
+            String currentLevel,
+            Map<String, List<Filter>> matchedFilters,
+            int length
+
+                                            ) throws Exception {
+
+        if (matchedFilters == null || matchedFilters.size() == 0) {
+                return false;
+
+        }
+        if (currentLevel.indexOf('[') == -1) {
+                return false;
+        }
+
+        StringBuilder prefix = new StringBuilder();
+        StringBuilder prepath = new StringBuilder();
+        int index = 0;
+        while ((index = currentLevel.indexOf('[')) != -1) {
+            prepath.append(currentLevel.substring(0, currentLevel.indexOf(']') + 1));
+            prefix.append(currentLevel.substring(0, index) + "[]");
+            int i = Integer.parseInt(currentLevel.substring(index + 1, currentLevel.indexOf(']')));
+            List<Filter> filters = null;
+
+            filters = matchedFilters.get(prefix.toString().trim());
+
+            if (filters == null || filters.size() == 0) {
+
+                    return false;
+
+            }
+
+            boolean isMatched = false;
+            if (filters.get(0) instanceof Range) {
+                isMatched = isMatchingRange(filters, i, length);
+            } else if (filters.get(0) instanceof Condition) {
+                List<Condition> c = new ArrayList<>();
+                for (Filter f : filters) {
+                    c.add((Condition) f);
+                }
+
+                JsonArray jsonArray = cachedJsonArrays.get(prepath.substring(0, prepath.lastIndexOf("[")));
+                isMatched = isMatchingConditions(jsonArray.get(i).getAsJsonObject(), c);
+            }
+
+            if (isMatched) {
+                return true;
+            } else {
+                currentLevel = currentLevel.substring(currentLevel.indexOf(']') + 1);
+            }
+
+        }
+
+        return false;
     }
 
 
