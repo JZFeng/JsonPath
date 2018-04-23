@@ -8,6 +8,15 @@ public static List<JsonElementWithLevel> get(
 * It supports partial JsonPath, for example, if user enters "URL", it gets all the JsonElements that has "URL" as the key;
 * It supports ignoring case, for example, if user enters "URL", it gets all the JsonElements that has "URL" / "url" / "Url" as the key;
 * It supports ignoring some JsonPaths by passing JsonPath array
+            String[] ignoredPaths = new String[]{
+                            "PICTURE.mediaList[0].image.originalImg.URL", 
+                            "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
+                            , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
+                            , "BINSUMMARY.minView.actions[1].action.URL" // 2
+                            , "$.WATCH.watching.watchAction.action.URL" // 1
+                            , "$.modules.WATCH.watch.watchAction.action.URL"  // 1
+                            , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
+                    }; 
 
 # Here are some sample JsonPaths
                 "$.modules.BINSUMMARY.minView.actions[0]"
@@ -23,17 +32,6 @@ public static List<JsonElementWithLevel> get(
                 "RETURNS.maxView.value[-3:-1]"
                 "RETURNS.maxView.value[-2]"
  
-String[] ignoredPaths = new String[]{
-                "PICTURE.mediaList[0].image.originalImg.URL",  //3
-                "RETURNS.maxView.value[3].value[0].textSpans[0].action.URL" // 1
-                , "THIRD_PARTY_RESOURCES.js[0].url"  // 1
-                , "BINSUMMARY.minView.actions[1].action.URL" // 2
-                , "$.WATCH.watching.watchAction.action.URL" // 1
-                , "$.modules.WATCH.watch.watchAction.action.URL"  // 1
-                , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
-        }; 
-
-
 JsonPath expressions always refer to a JSON structure in the same way as XPath expression are used in combination 
 with an XML document. The "root member object" in JsonPath is always referred to as `$` regardless if it is an 
 object or array.
