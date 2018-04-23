@@ -212,7 +212,7 @@ public class JsonPath {
             }
 
         }
-        System.out.println(result);
+
         return applyIgnoredPathsWithoutArray(result, ignoredPaths, source);
     }
 
