@@ -3,7 +3,18 @@ public static List<JsonElementWithLevel> get(
             String path, 
             boolean ignoreCase, 
             String[] ignoredPaths) 
-    
+
+public class JsonElementWithLevel {
+    private JsonElement jsonElement;
+    private String level;
+
+    public JsonElementWithLevel(JsonElement jsonElement, String level) {
+        this.jsonElement = jsonElement;
+        this.level = level;
+    }
+}
+
+
 * It supports standard JsonPath. 
 * It supports partial JsonPath, for example, if user enters "URL", it gets all the JsonElements that has "URL" as the key;
 * It supports ignoring case, for example, if user enters "URL", it gets all the JsonElements that has "URL" / "url" / "Url" as the key;
