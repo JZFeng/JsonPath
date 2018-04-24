@@ -76,12 +76,6 @@ public class JsonPath {
         return get(source, path, false, new String[]{});
     }
 
-    public static List<JsonElementWithLevel> get(
-            String source, String path, String[] ignoredPaths) throws Exception {
-        List<JsonElementWithLevel> res = new ArrayList<>();
-        return get(source, path, false, ignoredPaths);
-    }
-
     /**
      * @param source
      * @param path
@@ -113,12 +107,6 @@ public class JsonPath {
      */
     public static List<JsonElementWithLevel> get(JsonObject source, String path) throws Exception {
         return get(source, path, false, new String[]{});
-    }
-
-
-    public static List<JsonElementWithLevel> get(
-            JsonObject source, String path, String[] ignoredPaths) throws Exception {
-        return get(source, path, false, ignoredPaths);
     }
 
     /**
