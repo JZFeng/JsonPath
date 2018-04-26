@@ -29,9 +29,10 @@ public class JsonPath {
     public static void main(String[] args) throws Exception {
 
         JsonParser parser = new JsonParser();
-        String json = Utils.convertFormattedJson2Raw(new File("/Users/jzfeng/Desktop/O.json"));
+        String json = Utils.convertFormattedJson2Raw(new File("/Users/jzfeng/Desktop/au.json"));
         JsonObject source = parser.parse(json).getAsJsonObject();
 
+/*
         String[] paths = new String[]{
                 "$.modules.BINSUMMARY.minView.actions[0]",
                 "SELLERPRESENCE.sellerName.action.URL",
@@ -57,6 +58,37 @@ public class JsonPath {
                 , "modules.WATCH.watch.watchAction.action.URL"  // 1
                 , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
 //                total = 11;
+        };
+*/
+
+
+
+        String[] paths = new String[]{"URL"};
+        String[] ignoredPaths = new String[]{
+                "modules.SELLERPRESENCE.profileLogo.URL",
+                "modules.COMMITTOBUY.redirect.url",
+                "modules.COMMITTOBUY.fallBackUrl.URL",
+                "modules.SELLERPRESENCE.askSeller.action.URL",
+                "modules.SELLERPRESENCE.sellerName.action.URL",
+                "$.modules.PICTURE",
+                "$.modules.ITEMDESC.itemDescription.action.URL",
+                "$.modules.EBAYGUARANTEE.embg.infoLink.URL",
+                "$.modules.OTHER_ACTIONS.soltAction.action.URL",
+                "$.modules.OTHER_ACTIONS.reportItemAction.action.URL",
+                "$.modules.OTHER_ACTIONS.surveyAction.action.URL",
+                "$.modules.INCENTIVES.incentivesURL.URL",
+                "$.modules.BID_LAYER.thumbnail.URL",
+                "$.modules.BID_LAYER.reviewBidAction.action.URL",
+                "$.modules.BID_LAYER.confirmBidAction.action.URL",
+                "$.modules.BIDSUMMARY.bidAction.action.URL",
+                "$.modules.TOPRATEDSELLER.topRatedInfo.logo.action.URL",
+                "$.modules.RSPSECTION.minView.logo.action.URL",
+                "$.modules.THIRD_PARTY_RESOURCES.js[*].url",
+                "$.modules.BINSUMMARY.minView.actions[0,1,2].action.URL",
+                "$.modules.HANDLINGCONTENT.value[*].textSpans[1].action.URL",
+                "$.modules.RETURNS.maxView.value[3:5]",
+                "$.modules.BID_LAYER.powerbidButtons[*].action.URL",
+                "$.modules.REWARDS.value.textSpans[1].action.URL"
         };
 
         for (String path : paths) {
@@ -129,7 +161,7 @@ public class JsonPath {
         Map<String, List<Filter>> ignoredFilters = getFilters(ignoredPaths, ignoreCase);
         Map<String, List<Filter>> ignoredMatchedFilters = new LinkedHashMap<>();
         Map<String, JsonArray> cachedJsonArrays = new LinkedHashMap<>(); // save JsonArray to map, in order to reduce time complexibility
-        boolean isAbsolutePath = isAbsoluteJsonPath(path, source);
+        boolean isAbsolutePath = isAbsolutePath(path, source);
         boolean isFinished = false;
 
         // to support length() function;
@@ -205,76 +237,37 @@ public class JsonPath {
     }
 
 
-
+    /**
+     * Very expensive if you do not enter full JsonPath, N square time complexibility;
+     * @param result
+     * @param ignoredPaths
+     * @return
+     */
     private static List<JsonElementWithLevel> applyIgnoredPathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
-        boolean allAbsoluteJsonPaths =  isAbsoluteJsonPath(ignoredPaths, source );
-        if(allAbsoluteJsonPaths) {
-            return applyIgnoredAbsolutePathsWithoutArray(result, ignoredPaths, source);
-        } else {
-            return applyIgnoredPartialPathsWithoutArray(result, ignoredPaths, source);
-        }
-    }
-
-
-    /**
-     * Very expensive if you do not enter full JsonPath, N square time complexibility;
-     * @param result
-     * @param ignoredPaths
-     * @return
-     */
-    private static List<JsonElementWithLevel> applyIgnoredAbsolutePathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
-        if(ignoredPaths == null || ignoredPaths.length == 0) {
-            return result;
-        }
-
-        Set<String> set1  = new HashSet<>();
-        for (String path : ignoredPaths) {
-            if (!path.startsWith("$")) {
-                path = "$." + path;
-            }
-            set1.add(path);
-        }
-
-        Iterator<JsonElementWithLevel> itr = result.iterator();
-        while(itr.hasNext()) {
-            JsonElementWithLevel je = itr.next();
-            String level = je.getLevel();
-            if(set1.contains(level)) {
-                itr.remove();
-            }
-        }
-
-        return result;
-    }
-
-
-    /**
-     * Very expensive if you do not enter full JsonPath, N square time complexibility;
-     * @param result
-     * @param ignoredPaths
-     * @return
-     */
-    private static List<JsonElementWithLevel> applyIgnoredPartialPathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
         if (ignoredPaths == null || ignoredPaths.length == 0) {
             return result;
         }
 
-        Set<String> set = new HashSet<>();
+        //get all absolute paths.
+        Set<String> absolutePaths = getAbsolutePaths(ignoredPaths, source);
+
+        //get regex for each ignoredPath
+        List<String> regexs = new ArrayList<>();
         for (String ignoredPath : ignoredPaths) {
             if (ignoredPath.indexOf('[') == -1) {
-                set.add(ignoredPath);
+                regexs.add(generateRegex(ignoredPath.trim(), false) + ".*");
             }
-        }
-
-        List<String> regexs = new ArrayList<>();
-        for (String str : set) {
-            regexs.add(generateRegex(str, false));
         }
 
         Iterator<JsonElementWithLevel> itr = result.iterator();
         while (itr.hasNext()) {
             JsonElementWithLevel je = itr.next();
             String level = je.getLevel();
+            if(absolutePaths.contains(level)) {
+                itr.remove();
+                continue;
+            }
+
             for (String regex : regexs) {
                 if (level.matches(regex)) {
                     itr.remove();
@@ -282,7 +275,6 @@ public class JsonPath {
                 }
             }
         }
-
 
         return result;
     }
@@ -738,8 +730,34 @@ public class JsonPath {
         return res;
     }
 
+    private static Set<String> getAbsolutePaths(String[] paths, JsonObject source) {
+        Set<String> res = new LinkedHashSet<>();
+        if(paths == null || paths.length == 0 ) {
+            return res;
+        }
 
-    private static boolean isAbsoluteJsonPath(String[] paths, JsonObject source) {
+        Set<String> keys = getKeys(source);
+        for(String path : paths) {
+            path = path.trim();
+            if(path.indexOf('[') != -1) {
+                continue;
+            }
+            if(path.startsWith("$")) {
+                res.add(path);
+                continue;
+            }
+
+            int index = path.indexOf(".");
+            if( (index == -1 && keys.contains(path)) || (index != - 1 && keys.contains(path.substring(0,index))) ) {
+                res.add("$." + path);
+            }
+
+        }
+
+        return res;
+    }
+
+    private static boolean isAbsolutePath(String[] paths, JsonObject source) {
         if (paths == null || paths.length == 0) {
             return true;
         }
@@ -766,8 +784,8 @@ public class JsonPath {
         return true;
     }
 
-    private static boolean isAbsoluteJsonPath(String path, JsonObject source) {
-        return isAbsoluteJsonPath(new String[]{path}, source);
+    private static boolean isAbsolutePath(String path, JsonObject source) {
+        return isAbsolutePath(new String[]{path}, source);
     }
 
 }
