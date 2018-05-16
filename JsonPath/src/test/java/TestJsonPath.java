@@ -1,6 +1,6 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.jz.json.jsonpath.JsonElementWithLevel;
+import com.jz.json.jsonpath.JsonElementWithPath;
 import com.jz.json.jsonpath.JsonPath;
 import com.jz.json.jsonpath.Utils;
 import org.junit.Assert;
@@ -38,7 +38,7 @@ public class TestJsonPath {
         };
 
         for (int i = 0; i < us_paths.length; i++) {
-            List<JsonElementWithLevel> res = JsonPath.get(source, us_paths[i]);
+            List<JsonElementWithPath> res = JsonPath.get(source, us_paths[i]);
             System.out.println("***SIZE: " + res.size() + ";" + us_paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
@@ -69,7 +69,7 @@ public class TestJsonPath {
         };
 
         for (int i = 0; i < us_paths.length; i++) {
-            List<JsonElementWithLevel> res = get(source, us_paths[i], true, new String[]{});
+            List<JsonElementWithPath> res = get(source, us_paths[i], true, new String[]{});
             System.out.println("***SIZE: " + res.size() + ";" + us_paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
@@ -109,7 +109,7 @@ public class TestJsonPath {
         };
 
         for (int i = 0; i < us_paths.length; i++) {
-            List<JsonElementWithLevel> res = get(source, us_paths[i], false, us_ignoredPaths);
+            List<JsonElementWithPath> res = get(source, us_paths[i], false, us_ignoredPaths);
             System.out.println("***SIZE: " + res.size() + ";" + us_paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
@@ -149,7 +149,7 @@ public class TestJsonPath {
         };
 
         for (int i = 0; i < us_paths.length; i++) {
-            List<JsonElementWithLevel> res = get(source, us_paths[i], true, us_ignoredPaths);
+            List<JsonElementWithPath> res = get(source, us_paths[i], true, us_ignoredPaths);
             System.out.println("***SIZE: " + res.size() + ";" + us_paths[i] + ";\r\n" + res);
             Assert.assertTrue(res.size() == expectedSize[i]);
         }
@@ -186,7 +186,7 @@ public class TestJsonPath {
 
 
         int expectedSize = 15;
-        List<JsonElementWithLevel> res = get(source, au_path, true, au_ignoredPaths_noArray);
+        List<JsonElementWithPath> res = get(source, au_path, true, au_ignoredPaths_noArray);
         System.out.println("***SIZE: " + res.size() + ";" + au_path + ";\r\n" + res);
         Assert.assertTrue(res.size() == expectedSize);
     }
@@ -226,7 +226,7 @@ public class TestJsonPath {
         };
 
         int expectedSize = 9;
-        List<JsonElementWithLevel> res = get(source, au_path, true, au_ignoredPaths_hasArray);
+        List<JsonElementWithPath> res = get(source, au_path, true, au_ignoredPaths_hasArray);
         System.out.println("***SIZE: " + res.size() + ";" + au_path + ";\r\n" + res);
         Assert.assertTrue(res.size() == expectedSize);
     }

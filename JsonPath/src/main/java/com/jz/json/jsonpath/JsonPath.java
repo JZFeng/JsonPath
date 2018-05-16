@@ -93,18 +93,18 @@ public class JsonPath {
 
         for (String path : paths) {
             long startTime = System.currentTimeMillis();
-            List<JsonElementWithLevel> res = get(source, path, true, ignoredPaths);
+            List<JsonElementWithPath> res = get(source, path, true, ignoredPaths);
             System.out.println("****" + res.size() + "****" + (long) (System.currentTimeMillis() - startTime) + "ms" + "," + path);
-            for (JsonElementWithLevel je : res) {
+            for (JsonElementWithPath je : res) {
                 System.out.println(je);
             }
         }
     }
 
 
-    public static List<JsonElementWithLevel> get(
+    public static List<JsonElementWithPath> get(
             String source, String path) throws Exception {
-        List<JsonElementWithLevel> res = new ArrayList<>();
+        List<JsonElementWithPath> res = new ArrayList<>();
         return get(source, path, false, new String[]{});
     }
 
@@ -115,9 +115,9 @@ public class JsonPath {
      * @throws Exception
      * @author jzfeng
      */
-    public static List<JsonElementWithLevel> get(
+    public static List<JsonElementWithPath> get(
             String source, String path, boolean ignoreCase, String[] ignoredPaths) throws Exception {
-        List<JsonElementWithLevel> res = new ArrayList<>();
+        List<JsonElementWithPath> res = new ArrayList<>();
         if (source == null || source.length() == 0 || path == null || path.length() == 0) {
             return res;
         }
@@ -137,7 +137,7 @@ public class JsonPath {
      * @throws Exception
      * @author jzfeng
      */
-    public static List<JsonElementWithLevel> get(JsonObject source, String path) throws Exception {
+    public static List<JsonElementWithPath> get(JsonObject source, String path) throws Exception {
         return get(source, path, false, new String[]{});
     }
 
@@ -145,12 +145,12 @@ public class JsonPath {
      * @param source     the source of JsonObject
      * @param path       standard json path;
      * @param ignoreCase if true, it will ignore the case of path; if false, it will strictly match path;
-     * @return returns a a list of {@link JsonElementWithLevel}
+     * @return returns a a list of {@link JsonElementWithPath}
      * @author jzfeng
      */
-    public static List<JsonElementWithLevel> get(
+    public static List<JsonElementWithPath> get(
             JsonObject source, String path, boolean ignoreCase, String[] ignoredPaths) throws Exception {
-        List<JsonElementWithLevel> result = new ArrayList<>();
+        List<JsonElementWithPath> result = new ArrayList<>();
         if (path == null || path.length() == 0 || source == null || source.isJsonNull()) {
             return result;
         }
@@ -168,17 +168,17 @@ public class JsonPath {
         if (path.matches("(.*)(\\.length\\(\\)$)")) { // case: [path == $.listing.termsAndPolicies.length()]
             path = path.replaceAll("(.*)(\\.length\\(\\)$)", "$1");
             int length = length(source, path, ignoreCase);
-            result.add(new JsonElementWithLevel(new JsonPrimitive(length), path));
+            result.add(new JsonElementWithPath(new JsonPrimitive(length), path));
             return result;
         }
 
-        Queue<JsonElementWithLevel> queue = new LinkedList<JsonElementWithLevel>();
-        queue.offer(new JsonElementWithLevel(source, "$"));
+        Queue<JsonElementWithPath> queue = new LinkedList<JsonElementWithPath>();
+        queue.offer(new JsonElementWithPath(source, "$"));
         while (!queue.isEmpty()) {
             int size = queue.size();
             //Traverse by level
             for (int i = 0; i < size; i++) {
-                JsonElementWithLevel org = queue.poll();
+                JsonElementWithPath org = queue.poll();
                 String currentLevel = org.getLevel();
                 JsonElement je = org.getJsonElement();
 //                System.out.println(currentLevel);
@@ -189,7 +189,7 @@ public class JsonPath {
                     int length = ja.size();
                     for (int j = 0; j < ja.size(); j++) {
                         String level = currentLevel + "[" + j + "]";
-                        JsonElementWithLevel tmp = new JsonElementWithLevel(ja.get(j), level);
+                        JsonElementWithPath tmp = new JsonElementWithPath(ja.get(j), level);
                         queue.offer(tmp);
                         if (ignoreCase) {
                             level = level.toLowerCase();
@@ -208,7 +208,7 @@ public class JsonPath {
                     int length = jo.entrySet().size();
                     for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
                         String level = currentLevel + "." + entry.getKey();
-                        JsonElementWithLevel tmp = new JsonElementWithLevel(entry.getValue(), level);
+                        JsonElementWithPath tmp = new JsonElementWithPath(entry.getValue(), level);
                         queue.offer(tmp);
                         if (ignoreCase) {
                             level = level.toLowerCase();
@@ -243,7 +243,7 @@ public class JsonPath {
      * @param ignoredPaths
      * @return
      */
-    private static List<JsonElementWithLevel> applyIgnoredPathsWithoutArray(List<JsonElementWithLevel> result, String[] ignoredPaths, JsonObject source) {
+    private static List<JsonElementWithPath> applyIgnoredPathsWithoutArray(List<JsonElementWithPath> result, String[] ignoredPaths, JsonObject source) {
         if (ignoredPaths == null || ignoredPaths.length == 0) {
             return result;
         }
@@ -259,9 +259,9 @@ public class JsonPath {
             }
         }
 
-        Iterator<JsonElementWithLevel> itr = result.iterator();
+        Iterator<JsonElementWithPath> itr = result.iterator();
         while (itr.hasNext()) {
-            JsonElementWithLevel je = itr.next();
+            JsonElementWithPath je = itr.next();
             String level = je.getLevel();
             if(absolutePaths.contains(level)) {
                 itr.remove();
@@ -595,7 +595,7 @@ public class JsonPath {
         }
 
         int length = 0;
-        List<JsonElementWithLevel> result = get(jsonObject, path, ignoreCase, new String[]{});
+        List<JsonElementWithPath> result = get(jsonObject, path, ignoreCase, new String[]{});
 
         if (result == null || result.size() == 0) {
             length = 0;
