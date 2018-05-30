@@ -162,5 +162,47 @@ public class Utils {
         return true;
     }
 
+    // save JsonArray to map, in order to reduce time complexibility
+    public static Map<String, JsonArray> getJsonArrayMap(JsonObject source)  {
+        Map<String, JsonArray> result = new LinkedHashMap<>();
+        if(source == null || source.isJsonNull() || !source.isJsonObject()) {
+            return result;
+        }
+
+        Queue<JsonElementWithPath> queue = new LinkedList<JsonElementWithPath>();
+        queue.offer(new JsonElementWithPath(source, "$"));
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            //Traverse by level
+            for (int i = 0; i < size; i++) {
+                JsonElementWithPath org = queue.poll();
+                String currentLevel = org.getLevel();
+                JsonElement je = org.getJsonElement();
+
+                if (je.isJsonArray()) {
+                    JsonArray ja = je.getAsJsonArray();
+                    result.put(currentLevel, ja);
+                    int length = ja.size();
+                    for (int j = 0; j < ja.size(); j++) {
+                        String level = currentLevel + "[" + j + "]";
+                        JsonElementWithPath tmp = new JsonElementWithPath(ja.get(j), level);
+                        queue.offer(tmp);
+                    }
+                } else if (je.isJsonObject()) {
+                    JsonObject jo = je.getAsJsonObject();
+                    int length = jo.entrySet().size();
+                    for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
+                        String level = currentLevel + "." + entry.getKey();
+                        JsonElementWithPath tmp = new JsonElementWithPath(entry.getValue(), level);
+                        queue.offer(tmp);
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+
 }
 
