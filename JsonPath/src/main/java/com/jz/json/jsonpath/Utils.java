@@ -163,7 +163,7 @@ public class Utils {
     }
 
     // save JsonArray to map, in order to reduce time complexibility
-    public static Map<String, JsonArray> getJsonArrayMap(JsonObject source)  {
+    public static Map<String, JsonArray> getJsonArrayMap(JsonObject source , boolean ignoreCase)  {
         Map<String, JsonArray> result = new LinkedHashMap<>();
         if(source == null || source.isJsonNull() || !source.isJsonObject()) {
             return result;
@@ -182,17 +182,21 @@ public class Utils {
                 if (je.isJsonArray()) {
                     JsonArray ja = je.getAsJsonArray();
                     result.put(currentLevel, ja);
-                    int length = ja.size();
                     for (int j = 0; j < ja.size(); j++) {
                         String level = currentLevel + "[" + j + "]";
+                        if(ignoreCase) {
+                            level = level.toLowerCase();
+                        }
                         JsonElementWithPath tmp = new JsonElementWithPath(ja.get(j), level);
                         queue.offer(tmp);
                     }
                 } else if (je.isJsonObject()) {
                     JsonObject jo = je.getAsJsonObject();
-                    int length = jo.entrySet().size();
                     for (Map.Entry<String, JsonElement> entry : jo.entrySet()) {
                         String level = currentLevel + "." + entry.getKey();
+                        if(ignoreCase) {
+                            level = level.toLowerCase();
+                        }
                         JsonElementWithPath tmp = new JsonElementWithPath(entry.getValue(), level);
                         queue.offer(tmp);
                     }
