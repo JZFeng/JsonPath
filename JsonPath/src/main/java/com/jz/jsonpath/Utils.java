@@ -1,4 +1,4 @@
-package com.jz.json.jsonpath;
+package com.jz.jsonpath;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;

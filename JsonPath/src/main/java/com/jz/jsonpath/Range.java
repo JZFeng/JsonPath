@@ -1,7 +1,5 @@
 
-package com.jz.json.jsonpath;
-
-import com.google.common.collect.Lists;
+package com.jz.jsonpath;
 
 import java.util.*;
 
@@ -10,7 +8,7 @@ import java.util.*;
  */
 
 //  x >= start && x <= end
-public class Range implements Filter {
+public class Range implements IFilter {
     private int start;
     private int end;
 

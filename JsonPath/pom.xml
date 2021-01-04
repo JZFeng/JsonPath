@@ -7,7 +7,7 @@
     <groupId>com.jz</groupId>
     <artifactId>jsonpath</artifactId>
     <version>1.1-RELEASE</version>
-    <packaging>jar </packaging>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>

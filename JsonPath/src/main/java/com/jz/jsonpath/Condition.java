@@ -1,4 +1,4 @@
-package com.jz.json.jsonpath;
+package com.jz.jsonpath;
 
 import com.google.common.collect.Sets;
 
@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * @author jzfeng
  */
 
-public class Condition implements Filter {
+public class Condition implements IFilter {
     private String left;
     private String operator;
     private String right;

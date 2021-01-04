@@ -1,15 +1,15 @@
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.jz.json.jsonpath.JsonElementWithPath;
-import com.jz.json.jsonpath.JsonPath;
-import com.jz.json.jsonpath.Utils;
+import com.jz.jsonpath.JsonElementWithPath;
+import com.jz.jsonpath.JsonPath;
+import com.jz.jsonpath.Utils;
 import org.junit.Assert;
 import org.testng.annotations.Test;
 
 import java.io.File;
 import java.util.List;
 
-import static com.jz.json.jsonpath.JsonPath.get;
+import static com.jz.jsonpath.JsonPath.get;
 
 
 public class TestJsonPath {

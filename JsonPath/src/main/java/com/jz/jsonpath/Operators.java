@@ -1,5 +1,5 @@
 
-package com.jz.json.jsonpath;
+package com.jz.jsonpath;
 
 //  ==,!=,>,<,>=, <=,  "=~", "in", "nin", "subsetof", "size", "empty", "notempty"
 public enum Operators {
