@@ -1,3 +1,23 @@
+# Background
+When I was working in eBay ViewItem team, for backend service testing, most times, we are manipulating Json files. 
+One important scenario is , passing a standard JsonPath, get the JsonElements and do the assertions.
+
+It is difficult for me to use existent jayway JsonPath. So I decide to implement my own JsonPath to have more features.
+
+Phase 1: implement the JsonArray slice to finish my checkoutURL testing JIRA ID : GOTHAM-210
+Phase 2: implement the filter function, something like " textSpans[?(@.text =~ \"(.*)\\d{3,}(.*)\" || @.text in {\"Have a nice day\", \"Return policy\"})]"
+Phase 3: implement the ignore Case and ignore JsonPaths function to finish mWeb Redirection testing
+NOTE: ignoring JsonPaths is an expensive action if the JsonPath is partial JsonPaths. Time complex is O(N2).
+
+
+# Reinvent the wheels?
+I would not call it "Reinventing the wheels " because the existent JayWay jsonpath does not have the features that I want.
+My requirement is quite simple:
+passing a standard JsonPath, giving me a list of JsonElement along with complete JsonPath.
+If it contains some JsonElements that i do not want, simply passing a string array to remove them from the result.
+If I want result to be case-insensitive, please ignore case for the JsonPath.
+
+``` java
 public static List<JsonElementWithLevel> get(
             JsonObject source, 
             String path, 
@@ -13,7 +33,7 @@ public class JsonElementWithLevel {
         this.level = level;
     }
 }
-
+```
 
 * It supports standard JsonPath. 
 * It supports partial JsonPath, for example, if user enters "URL", it gets all the JsonElements that has "URL" as the key;
@@ -30,7 +50,7 @@ public class JsonElementWithLevel {
                             , "BINSUMMARY.minView.actions[2].value.cartSigninUrl.URL" // 2
                     }; 
 
-# Here are some sample JsonPaths
+# Sample JsonPaths
                 "$.modules.BINSUMMARY.minView.actions[0]"
                 "SELLERPRESENCE.sellerName.action.URL"
                 "RETURNS.maxView.value.length()"
